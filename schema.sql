@@ -1,49 +1,42 @@
 ﻿CREATE DATABASE yeticave
-	DEFAULT CHARACTER SET utf8
-	DEFAULT COLLATE utf8_general_ci;
+    DEFAULT CHARACTER SET utf8
+    DEFAULT COLLATE utf8_general_ci;
 
 USE yeticave;
 
-CREATE TABLE lot (
-	id INT AUTO_INCREMENT PRIMARY KEY,
-	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	title CHAR NOT NULL,
-	description CHAR,
-	img_url CHAR NOT NULL,
-	price_start INT NOT NULL,
-    end_date DATETIME,
-	bet_step INT,
-	cat_id INT references category(id),
-	user_id INT references user(id),
-	winner_id INT references user(id)
+CREATE TABLE lot(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    title CHAR(128) NOT NULL UNIQUE,
+    description CHAR(255),
+    img_url CHAR(255) NOT NULL,
+    price_start FLOAT NOT NULL,
+    end_at DATETIME,
+    bet_step INT,
+    category_id INT NOT NULL REFERENCES category(id) ON UPDATE RESTRICT ON DELETE RESTRICT,
+    user_id INT NOT NULL REFERENCES user(id) ON UPDATE RESTRICT ON DELETE RESTRICT,
+    winner_user_id INT REFERENCES user(id) ON UPDATE RESTRICT ON DELETE RESTRICT
 );
 
 CREATE TABLE category(
-	id INT AUTO_INCREMENT PRIMARY KEY,
-	title CHAR,
-    UNIQUE INDEX index_category (title)
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title CHAR(128) NOT NULL UNIQUE
 );
 
 CREATE TABLE user(
     id INT AUTO_INCREMENT PRIMARY KEY,
-	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     email CHAR(128) NOT NULL UNIQUE,
-	name CHAR(128),
-    pass CHAR(64) NOT NULL UNIQUE,
-    avatar_url CHAR NOT NULL,
-    contacts TEXT,
-    lots_id INT references lot(id),
-    bets_id INT references bet(id),
-    UNIQUE INDEX index_user (email, pass)
+    name CHAR(128) NOT NULL,
+    password CHAR(64) NOT NULL,
+    avatar_url CHAR(255) NOT NULL,
+    contacts TEXT
 );
 
 CREATE TABLE bet(
-	id INT AUTO_INCREMENT PRIMARY KEY,
-	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     bet_value INT,
-    user_id INT references user(id),
-    lot_id INT references lot(id)
+    user_id INT NOT NULL references user(id) ON UPDATE RESTRICT ON DELETE RESTRICT,
+    lot_id INT NOT NULL references lot(id) ON UPDATE RESTRICT ON DELETE RESTRICT
 );
-
-CREATE INDEX index_title ON lot(title);
-CREATE INDEX index_description ON lot(description);
