@@ -23,7 +23,7 @@
 
             <nav class="user-menu">
 
-                <?php if ($is_auth): ?>
+                <?php if ($is_auth)  : ?>
                     <div class="user-menu__image">
                         <img src="img/user.jpg" width="40" height="40" alt="Пользователь">
                     </div>
@@ -56,7 +56,7 @@
 
             <?php foreach ($categories as $category): ?>
                 <li class="nav__item">
-                    <a href="pages/all-lots.html"><?= htmlspecialchars($category); ?></a>
+                    <a href="pages/all-lots.html"><?= h($category); ?></a>
                 </li>
             <?php endforeach; ?>
 
