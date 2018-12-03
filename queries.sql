@@ -1,35 +1,35 @@
--- Добавление категорий
-INSERT INTO category SET title = 'Доски и лыжи';
-INSERT INTO category SET title = 'Крепления';
-INSERT INTO category SET title = 'Ботинки';
-INSERT INTO category SET title = 'Одежда';
-INSERT INTO category SET title = 'Инструменты';
-INSERT INTO category SET title = 'Разное';
+п»ї-- Р”РѕР±Р°РІР»РµРЅРёРµ РєР°С‚РµРіРѕСЂРёР№
+INSERT INTO category SET title = 'Р”РѕСЃРєРё Рё Р»С‹Р¶Рё';
+INSERT INTO category SET title = 'РљСЂРµРїР»РµРЅРёСЏ';
+INSERT INTO category SET title = 'Р‘РѕС‚РёРЅРєРё';
+INSERT INTO category SET title = 'РћРґРµР¶РґР°';
+INSERT INTO category SET title = 'РРЅСЃС‚СЂСѓРјРµРЅС‚С‹';
+INSERT INTO category SET title = 'Р Р°Р·РЅРѕРµ';
 
--- Добавление пользователей
-INSERT INTO user (email, name, password, avatar_url) VALUES ('malahovk@gmail.com', 'Кирилл', '12345', 'kirill.jpg');
-INSERT INTO user (email, name, password, avatar_url) VALUES ('keks@htmlacademy.com', 'Кекс', 'meow', 'keks.jpg');
+-- Р”РѕР±Р°РІР»РµРЅРёРµ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№
+INSERT INTO user (email, name, password, avatar_url) VALUES ('malahovk@gmail.com', 'РљРёСЂРёР»Р»', '12345', 'kirill.jpg');
+INSERT INTO user (email, name, password, avatar_url) VALUES ('keks@htmlacademy.com', 'РљРµРєСЃ', 'meow', 'keks.jpg');
 
--- Добавление лотов
+-- Р”РѕР±Р°РІР»РµРЅРёРµ Р»РѕС‚РѕРІ
 INSERT INTO lot (title, category_id, user_id, description, img_url, price_start, end_at, bet_step)
-    VALUES ('2014 Rossignol District Snowboard', 1, 1, 'Описание этой доски', 'img/lot-1.jpg', 10999.5, '31.12.2018', 500);
-
-INSERT INTO lot (title, category_id, user_id, description, img_url, price_start, end_at, bet_step)
-    VALUES ('DC Ply Mens 2016/2017 Snowboard', 1, 1, 'Описание этой лыжи', 'img/lot-2.jpg', 159999, '2018.12.15', 500);
+    VALUES ('2014 Rossignol District Snowboard', 1, 1, 'РћРїРёСЃР°РЅРёРµ СЌС‚РѕР№ РґРѕСЃРєРё', 'img/lot-1.jpg', 10999.5, '31.12.2018', 500);
 
 INSERT INTO lot (title, category_id, user_id, description, img_url, price_start, end_at, bet_step)
-    VALUES ('Крепления Union Contact Pro 2015 года размер L/XL', 2, 1, 'Описание этой штуки', 'img/lot-3.jpg', 8000, '2018.12.15', 300);
+    VALUES ('DC Ply Mens 2016/2017 Snowboard', 1, 1, 'РћРїРёСЃР°РЅРёРµ СЌС‚РѕР№ Р»С‹Р¶Рё', 'img/lot-2.jpg', 159999, '2018.12.15', 500);
 
 INSERT INTO lot (title, category_id, user_id, description, img_url, price_start, end_at, bet_step)
-    VALUES ('Ботинки для сноуборда DC Mutiny Charocal', 3, 2, 'Описание Ботинка', 'img/lot-4.jpg', 10999, '2018.12.20', 300);
+    VALUES ('РљСЂРµРїР»РµРЅРёСЏ Union Contact Pro 2015 РіРѕРґР° СЂР°Р·РјРµСЂ L/XL', 2, 1, 'РћРїРёСЃР°РЅРёРµ СЌС‚РѕР№ С€С‚СѓРєРё', 'img/lot-3.jpg', 8000, '2018.12.15', 300);
 
 INSERT INTO lot (title, category_id, user_id, description, img_url, price_start, end_at, bet_step)
-    VALUES ('Куртка для сноуборда DC Mutiny Charocal', 4, 1, 'Описание куртки', 'img/lot-5.jpg', 7500, '', 200);
+    VALUES ('Р‘РѕС‚РёРЅРєРё РґР»СЏ СЃРЅРѕСѓР±РѕСЂРґР° DC Mutiny Charocal', 3, 2, 'РћРїРёСЃР°РЅРёРµ Р‘РѕС‚РёРЅРєР°', 'img/lot-4.jpg', 10999, '2018.12.20', 300);
 
 INSERT INTO lot (title, category_id, user_id, description, img_url, price_start, end_at, bet_step)
-    VALUES ('Маска Oakley Canopy', 6, 1, 'Описание куртки', 'img/lot-5.jpg', 5400, '', 200);
+    VALUES ('РљСѓСЂС‚РєР° РґР»СЏ СЃРЅРѕСѓР±РѕСЂРґР° DC Mutiny Charocal', 4, 1, 'РћРїРёСЃР°РЅРёРµ РєСѓСЂС‚РєРё', 'img/lot-5.jpg', 7500, '', 200);
 
--- Добавление лотов
+INSERT INTO lot (title, category_id, user_id, description, img_url, price_start, end_at, bet_step)
+    VALUES ('РњР°СЃРєР° Oakley Canopy', 6, 1, 'РћРїРёСЃР°РЅРёРµ РєСѓСЂС‚РєРё', 'img/lot-5.jpg', 5400, '', 200);
+
+-- Р”РѕР±Р°РІР»РµРЅРёРµ Р»РѕС‚РѕРІ
 INSERT INTO bet (bet_value, user_id, lot_id )
     VALUES (11000, 2, 1);
 
@@ -37,38 +37,38 @@ INSERT INTO bet (bet_value, user_id, lot_id )
     VALUES (12000, 1, 1);
 
 
--- Получить все категории
+-- РџРѕР»СѓС‡РёС‚СЊ РІСЃРµ РєР°С‚РµРіРѕСЂРёРё
 SELECT * FROM category;
 
----- Получить самые новые, открытые лоты.
----- Каждый лот должен включать название, стартовую цену, ссылку на изображение, цену, название категории;
+---- РџРѕР»СѓС‡РёС‚СЊ СЃР°РјС‹Рµ РЅРѕРІС‹Рµ, РѕС‚РєСЂС‹С‚С‹Рµ Р»РѕС‚С‹.
+---- РљР°Р¶РґС‹Р№ Р»РѕС‚ РґРѕР»Р¶РµРЅ РІРєР»СЋС‡Р°С‚СЊ РЅР°Р·РІР°РЅРёРµ, СЃС‚Р°СЂС‚РѕРІСѓСЋ С†РµРЅСѓ, СЃСЃС‹Р»РєСѓ РЅР° РёР·РѕР±СЂР°Р¶РµРЅРёРµ, С†РµРЅСѓ, РЅР°Р·РІР°РЅРёРµ РєР°С‚РµРіРѕСЂРёРё;
 SELECT
     l.title, l.price_start, l.img_url, c.title
 FROM
     lot l JOIN category c
 WHERE
     end_at < STR_TO_DATE('2018-30-11 00:00:00', '%Y-%m-%d %H:%i:%s')
--- ? Открытые лоты, это те у которых end_at < текщей даты
--- ? А как получить цену? Получить все ставки и прибавить их к стартовой?
--- Это все необходимо сделать в одном запросе?
+-- ? РћС‚РєСЂС‹С‚С‹Рµ Р»РѕС‚С‹, СЌС‚Рѕ С‚Рµ Сѓ РєРѕС‚РѕСЂС‹С… end_at < С‚РµРєС‰РµР№ РґР°С‚С‹
+-- ? Рђ РєР°Рє РїРѕР»СѓС‡РёС‚СЊ С†РµРЅСѓ? РџРѕР»СѓС‡РёС‚СЊ РІСЃРµ СЃС‚Р°РІРєРё Рё РїСЂРёР±Р°РІРёС‚СЊ РёС… Рє СЃС‚Р°СЂС‚РѕРІРѕР№?
+-- Р­С‚Рѕ РІСЃРµ РЅРµРѕР±С…РѕРґРёРјРѕ СЃРґРµР»Р°С‚СЊ РІ РѕРґРЅРѕРј Р·Р°РїСЂРѕСЃРµ?
     
--- Показать лот по его id. Получите также название категории, к которой принадлежит лот
+-- РџРѕРєР°Р·Р°С‚СЊ Р»РѕС‚ РїРѕ РµРіРѕ id. РџРѕР»СѓС‡РёС‚Рµ С‚Р°РєР¶Рµ РЅР°Р·РІР°РЅРёРµ РєР°С‚РµРіРѕСЂРёРё, Рє РєРѕС‚РѕСЂРѕР№ РїСЂРёРЅР°РґР»РµР¶РёС‚ Р»РѕС‚
 SELECT l.*, c.title FROM lot l
     JOIN category c
     ON l.category_id = c.id
     WHERE l.id = 3
 
--- Обновить название лота по его идентификатору
+-- РћР±РЅРѕРІРёС‚СЊ РЅР°Р·РІР°РЅРёРµ Р»РѕС‚Р° РїРѕ РµРіРѕ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂСѓ
 UPDATE lot 
-    SET title = 'Новое_название'
+    SET title = 'РќРѕРІРѕРµ_РЅР°Р·РІР°РЅРёРµ'
     WHERE id = 3;
 
--- Получить список самых свежих ставок для лота по его идентификатору;
+-- РџРѕР»СѓС‡РёС‚СЊ СЃРїРёСЃРѕРє СЃР°РјС‹С… СЃРІРµР¶РёС… СЃС‚Р°РІРѕРє РґР»СЏ Р»РѕС‚Р° РїРѕ РµРіРѕ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂСѓ;
 SELECT b.* FROM lot l
     JOIN bet b
     ON l.id = b.lot_id
     WHERE l.id = 1;
--- ? Как понять "Самых свежих ставок" ?
+-- ? РљР°Рє РїРѕРЅСЏС‚СЊ "РЎР°РјС‹С… СЃРІРµР¶РёС… СЃС‚Р°РІРѕРє" ?
 
 
 
