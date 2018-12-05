@@ -43,10 +43,10 @@ INSERT INTO bet (bet_value, user_id, lot_id )
 -- Получить все категории
 SELECT * FROM category;
 
----- Получить самые новые, открытые лоты.
----- Каждый лот должен включать название, стартовую цену, ссылку на изображение, цену, название категории;
-SELECT l.id, l.title, l.price_start, l.img_url,  
-IF ( MAX(b.bet_value) IS NOT NULL, MAX(b.bet_value), l.price_start ) as price_current,
+-- Получить самые новые, открытые лоты.
+-- Каждый лот должен включать название, стартовую цену, ссылку на изображение, цену, название категории;
+SELECT l.id, l.title, l.price_start, l.img_url,
+IF (MAX(b.bet_value) IS NOT NULL, MAX(b.bet_value), l.price_start) as price_current,
 c.title
 FROM lot l
 	LEFT JOIN bet b ON l.id = b.lot_id
@@ -60,7 +60,7 @@ ORDER BY l.created_at DESC;
 SELECT l.id, l.created_at, l.title, l.description, l.img_url, l.price_start, l.end_at, l.bet_step, l.category_id, l.user_id, l.winner_user_id, c.title as cat_title FROM lot l
     JOIN category c
     ON l.category_id = c.id
-    WHERE l.id = 3
+    WHERE l.id = 3;
 
 -- Обновить название лота по его идентификатору
 UPDATE lot
