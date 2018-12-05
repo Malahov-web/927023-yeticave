@@ -45,7 +45,9 @@ SELECT * FROM category;
 
 ---- Получить самые новые, открытые лоты.
 ---- Каждый лот должен включать название, стартовую цену, ссылку на изображение, цену, название категории;
-SELECT l.id, l.title, l.price_start, l.img_url, MAX(b.bet_value) as price_current, c.title
+SELECT l.id, l.title, l.price_start, l.img_url,  
+IF ( MAX(b.bet_value) IS NOT NULL, MAX(b.bet_value), l.price_start ) as price_current,
+c.title
 FROM lot l
 	LEFT JOIN bet b ON l.id = b.lot_id
 	JOIN category c ON c.id = l.category_id
