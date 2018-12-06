@@ -55,8 +55,6 @@ $lots = [
 ];
 
 
-
-
 require_once('functions.php');
 
 $main = include_template(
@@ -70,12 +68,12 @@ $main = include_template(
 $layout = include_template(
     'layout.php',
     [
-        'content'     => $main,
-        'site_title'  => $site_title,
-        'user_name'   => $user_name,
+        'content' => $main,
+        'site_title' => $site_title,
+        'user_name' => $user_name,
         'user_avatar' => $user_avatar,
-        'is_auth'     => $is_auth,
-        'categories'  => $categories,
+        'is_auth' => $is_auth,
+        'categories' => $categories,
     ]
 );
 
