@@ -6,56 +6,70 @@ $user_avatar = 'img/user.jpg';
 
 $site_title = 'YetiCave - интернет-аукцион';
 
-$categories = [
-    'Доски и лыжи',
-    'Крепления',
-    'Ботинки',
-    'Одежда',
-    'Инструменты',
-    'Разное'
+
+//require_once 'init.php';
+require_once 'functions.php';
+//$db = require_once 'config/db.php';
+/* ?><pre><?php var_dump($db); ?></pre><?php */
+$db = [
+    'host' => 'localhost',
+    'user' => 'root',
+    'password' => '',
+    'database' => 'yeticave10'
 ];
 
-$lots = [
-    [
-        'title' => '2014 <a href="http://htmlacademy.ru">ЯкорьСсылкиПочтиXSS<a/>Rossignol District Snowboard',
-        'cat' => 'Доски и лыжи',
-        'price' => 10999.5,
-        'img_url' => 'img/lot-1.jpg'
-    ],
-    [
-        'title' => 'DC Ply Mens 2016/2017 Snowboard',
-        'cat' => 'Доски и лыжи',
-        'price' => 159999,
-        'img_url' => 'img/lot-2.jpg'
-    ],
-    [
-        'title' => 'Крепления Union Contact Pro 2015 года размер L/XL',
-        'cat' => 'Крепления',
-        'price' => 8000,
-        'img_url' => 'img/lot-3.jpg'
-    ],
-    [
-        'title' => 'Ботинки для сноуборда DC Mutiny Charocal',
-        'cat' => 'Ботинки',
-        'price' => 10999,
-        'img_url' => 'img/lot-4.jpg'
-    ],
-    [
-        'title' => 'Куртка для сноуборда DC Mutiny Charocal',
-        'cat' => 'Одежда',
-        'price' => 7500,
-        'img_url' => 'img/lot-5.jpg'
-    ],
-    [
-        'title' => 'Маска Oakley Canopy',
-        'cat' => 'Разное',
-        'price' => 5400,
-        'img_url' => 'img/lot-6.jpg'
-    ]
-];
+$link = mysqli_connect($db['host'], $db['user'], $db['password'], $db['database']);
+mysqli_set_charset($link, "utf8");
+
+$categories = [];
+$lots = [];
+$content = '';
+//require_once 'init.php';  END
 
 
-require_once('functions.php');
+if (!$link) {
+    $error = mysqli_connect_error();
+    $content = include_template('error.php', ['error' => $error]);
+} else {
+    print("Соединение установлено");
+    // выполнение запросов
+
+    $sql = 'SELECT id, title FROM category';
+    $result = mysqli_query($link, $sql);
+
+    if ($result) {
+        $last_id = mysqli_insert_id($link);
+        echo '<br> Идентификатор соединения: ' . $last_id ;
+        echo' <br> Количество возвращенных строк в запросе: ' . mysqli_num_rows($result);
+
+        $categories = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    } else {
+        $error = mysqli_error($link);
+        $content = include_template('error.php', ['error' => $error]);
+    }
+
+
+    $sql_lots = '
+SELECT l.id, l.title, l.price_start, l.img_url, MAX(b.bet_value) as price_current, c.title as cat_title
+FROM lot l
+	LEFT JOIN bet b ON l.id = b.lot_id
+	JOIN category c ON c.id = l.category_id
+WHERE NOW() < end_at
+    AND l.created_at <= NOW()
+GROUP BY l.id
+ORDER BY l.created_at DESC;
+';
+    $result_lots = mysqli_query($link, $sql_lots);
+
+    if ($result_lots) {
+        $lots = mysqli_fetch_all($result_lots, MYSQLI_ASSOC);
+    } else {
+        $error = mysqli_error($link);
+        $content = include_template('error.php', ['error' => $error]);
+    }
+
+}
+/* ?><pre><?php var_dump($categories); ?></pre><?php */
 
 $main = include_template(
     'index.php',
