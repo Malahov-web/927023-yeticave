@@ -7,10 +7,8 @@ $user_avatar = 'img/user.jpg';
 $site_title = 'YetiCave - интернет-аукцион';
 
 
-//require_once 'init.php';
 require_once 'functions.php';
-//$db = require_once 'config/db.php';
-/* ?><pre><?php var_dump($db); ?></pre><?php */
+
 $db = [
     'host' => 'localhost',
     'user' => 'root',
@@ -24,30 +22,21 @@ mysqli_set_charset($link, "utf8");
 $categories = [];
 $lots = [];
 $content = '';
-//require_once 'init.php';  END
 
 
 if (!$link) {
     $error = mysqli_connect_error();
     $content = include_template('error.php', ['error' => $error]);
 } else {
-    print("Соединение установлено");
-    // выполнение запросов
-
     $sql = 'SELECT id, title FROM category';
     $result = mysqli_query($link, $sql);
 
     if ($result) {
-        $last_id = mysqli_insert_id($link);
-        echo '<br> Идентификатор соединения: ' . $last_id ;
-        echo' <br> Количество возвращенных строк в запросе: ' . mysqli_num_rows($result);
-
         $categories = mysqli_fetch_all($result, MYSQLI_ASSOC);
     } else {
         $error = mysqli_error($link);
         $content = include_template('error.php', ['error' => $error]);
     }
-
 
     $sql_lots = '
 SELECT l.id, l.title, l.price_start, l.img_url, MAX(b.bet_value) as price_current, c.title as cat_title
@@ -69,7 +58,7 @@ ORDER BY l.created_at DESC;
     }
 
 }
-/* ?><pre><?php var_dump($categories); ?></pre><?php */
+
 
 $main = include_template(
     'index.php',
