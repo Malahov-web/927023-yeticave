@@ -24,7 +24,6 @@ $result = mysqli_query($link, $sql);
 
 if ($result === false) {
     $error = mysqli_error($link);
-    //$content = include_template('error.php', ['error' => $error]);
     die(include_template('error.php', ['error' => $error]));
 }
 
@@ -46,7 +45,6 @@ $result_lots = mysqli_query($link, $sql_lots);
 
 if ($result_lots === false) {
     $error = mysqli_error($link);
-    //$content = include_template('error.php', ['error' => $error]);
     die(include_template('error.php', ['error' => $error]));
 }
 $lots = mysqli_fetch_all($result_lots, MYSQLI_ASSOC);
