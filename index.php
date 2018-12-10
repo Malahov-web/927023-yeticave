@@ -16,21 +16,16 @@ $db = [
     'database' => 'yeticave10'
 ];
 
-$link = mysqli_connect($db['host'], $db['user'], $db['password'], $db['database']);
-mysqli_set_charset($link, 'utf8');
+$link = init_database($db);
 
-
-if (!$link) {
-    $error = mysqli_connect_error();
-    die(include_template('error.php', ['error' => $error]));
-}
 
 $sql = 'SELECT id, title FROM category';
 $result = mysqli_query($link, $sql);
 
 if ($result === false) {
     $error = mysqli_error($link);
-    $content = include_template('error.php', ['error' => $error]);
+    //$content = include_template('error.php', ['error' => $error]);
+    die(include_template('error.php', ['error' => $error]));
 }
 
 $categories = mysqli_fetch_all($result, MYSQLI_ASSOC);
@@ -51,7 +46,8 @@ $result_lots = mysqli_query($link, $sql_lots);
 
 if ($result_lots === false) {
     $error = mysqli_error($link);
-    $content = include_template('error.php', ['error' => $error]);
+    //$content = include_template('error.php', ['error' => $error]);
+    die(include_template('error.php', ['error' => $error]));
 }
 $lots = mysqli_fetch_all($result_lots, MYSQLI_ASSOC);
 

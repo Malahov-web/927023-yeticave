@@ -39,3 +39,17 @@ function h(string $data): string
 {
     return htmlspecialchars($data);
 }
+
+function init_database($db)
+{
+    $link = mysqli_connect($db['host'], $db['user'], $db['password'], $db['database']);
+    mysqli_set_charset($link, 'utf8');
+
+    if (!$link) {
+        $error = mysqli_connect_error();
+        die(include_template('error.php', ['error' => $error]));
+    }
+    //echo gettype($link), "\n"; // object
+
+    return $link;
+}
