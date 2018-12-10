@@ -9,14 +9,14 @@ $site_title = 'YetiCave - интернет-аукцион';
 
 require_once 'functions.php';
 
-$db = [
+$database_config = [
     'host' => 'localhost',
     'user' => 'root',
     'password' => '',
     'database' => 'yeticave10'
 ];
 
-$link = init_database($db);
+$link = init_database($database_config);
 
 $categories = get_categories($link);
 $lots = get_lots($link);

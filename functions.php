@@ -40,23 +40,20 @@ function h(string $data): string
     return htmlspecialchars($data);
 }
 
-function init_database($db): mysqli
+function init_database($database_config): mysqli
 {
-    $link = mysqli_connect($db['host'], $db['user'], $db['password'], $db['database']);
-    mysqli_set_charset($link, 'utf8');
-
+    $link = mysqli_connect($database_config['host'], $database_config['user'], $database_config['password'], $database_config['database']);
     if (!$link) {
         $error = mysqli_connect_error();
         die(include_template('error.php', ['error' => $error]));
     }
-    //echo gettype($link), "\n"; // object
+    mysqli_set_charset($link, 'utf8');
 
     return $link;
 }
 
 function get_categories($link)
 {
-
     $sql = 'SELECT id, title FROM category';
     $result = mysqli_query($link, $sql);
 
