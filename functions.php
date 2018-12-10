@@ -40,7 +40,7 @@ function h(string $data): string
     return htmlspecialchars($data);
 }
 
-function init_database(iterable $db): object
+function init_database($db): mysqli
 {
     $link = mysqli_connect($db['host'], $db['user'], $db['password'], $db['database']);
     mysqli_set_charset($link, 'utf8');
