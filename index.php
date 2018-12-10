@@ -18,36 +18,8 @@ $db = [
 
 $link = init_database($db);
 
-
-$sql = 'SELECT id, title FROM category';
-$result = mysqli_query($link, $sql);
-
-if ($result === false) {
-    $error = mysqli_error($link);
-    die(include_template('error.php', ['error' => $error]));
-}
-
-$categories = mysqli_fetch_all($result, MYSQLI_ASSOC);
-
-$sql_lots = '
-    SELECT l.id, l.title, l.price_start, l.img_url,
-    IF (MAX(b.bet_value) IS NOT NULL, MAX(b.bet_value), l.price_start) as price_current,
-    c.title as category_title
-    FROM lot l
-        LEFT JOIN bet b ON l.id = b.lot_id
-        JOIN category c ON c.id = l.category_id
-    WHERE NOW() < end_at
-        AND l.created_at <= NOW()
-    GROUP BY l.id
-    ORDER BY l.created_at DESC;
-';
-$result_lots = mysqli_query($link, $sql_lots);
-
-if ($result_lots === false) {
-    $error = mysqli_error($link);
-    die(include_template('error.php', ['error' => $error]));
-}
-$lots = mysqli_fetch_all($result_lots, MYSQLI_ASSOC);
+$categories = get_categories($link);
+$lots = get_lots($link);
 
 
 $main = include_template(
