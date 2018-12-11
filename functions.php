@@ -40,7 +40,7 @@ function h(string $data): string
     return htmlspecialchars($data);
 }
 
-function init_database($database_config): mysqli
+function init_database(array $database_config)
 {
     $link = mysqli_connect($database_config['host'], $database_config['user'], $database_config['password'], $database_config['database']);
     if (!$link) {
@@ -52,7 +52,7 @@ function init_database($database_config): mysqli
     return $link;
 }
 
-function get_categories($link)
+function get_categories($link): array
 {
     $sql = 'SELECT id, title FROM category';
     $result = mysqli_query($link, $sql);
@@ -65,7 +65,7 @@ function get_categories($link)
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
-function get_lots($link)
+function get_lots($link): array
 {
     $sql_lots = '
         SELECT l.id, l.title, l.price_start, l.img_url,
