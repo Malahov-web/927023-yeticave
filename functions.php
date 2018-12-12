@@ -26,13 +26,23 @@ function format_price(float $price): string
 }
 
 
-function time_till_tomorrow_midnight(): string
+function time_till_end($end_at): string
 {
-    $current_time = date_create('now');
-    $tomorrow_midnight_time = date_create('tomorrow midnight');
-    $diff_till_tomorrow_midnight = date_diff($tomorrow_midnight_time, $current_time);
+    //echo $end_at; // : string
+    //$end_at = strtotime($end_at); // : integer
+    //$end_at = date('Y:m:d H:I' ,$end_at);
+    //echo '<br>' . $end_at;
 
-    return date_interval_format($diff_till_tomorrow_midnight, "%H:%I");
+    $date_expire = '2014-08-06 00:00:00';
+    $end_at = new DateTime($end_at);
+
+
+
+    $current_time = date_create('now');
+    //$tomorrow_midnight_time = date_create('tomorrow midnight'); //    echo '<br>' . $tomorrow_midnight_time;
+    $diff_till_end = date_diff($end_at, $current_time);
+
+    return date_interval_format($diff_till_end, "%dд %H:%I");
 }
 
 function h(string $data): string
@@ -68,7 +78,7 @@ function get_categories($link): array
 function get_lots($link): array
 {
     $sql_lots = '
-        SELECT l.id, l.title, l.price_start, l.img_url,
+        SELECT l.id, l.title, l.price_start, l.img_url, l.end_at,
         IF (MAX(b.bet_value) IS NOT NULL, MAX(b.bet_value), l.price_start) as price_current,
         c.title as category_title
         FROM lot l

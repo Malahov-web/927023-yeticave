@@ -34,7 +34,7 @@
                             <span class="lot__cost"><?= format_price($lot['price_start']); ?></span>
                         </div>
                         <div class="lot__timer timer">
-                            <?= time_till_tomorrow_midnight(); ?>
+                            <?= time_till_end($lot['end_at']); ?>
                         </div>
                     </div>
                 </div>
