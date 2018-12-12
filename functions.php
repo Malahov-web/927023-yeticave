@@ -26,20 +26,10 @@ function format_price(float $price): string
 }
 
 
-function time_till_end($end_at): string
+function time_till_end(string $end_at): string
 {
-    //echo $end_at; // : string
-    //$end_at = strtotime($end_at); // : integer
-    //$end_at = date('Y:m:d H:I' ,$end_at);
-    //echo '<br>' . $end_at;
-
-    $date_expire = '2014-08-06 00:00:00';
-    $end_at = new DateTime($end_at);
-
-
-
+    $end_at = date_create($end_at);
     $current_time = date_create('now');
-    //$tomorrow_midnight_time = date_create('tomorrow midnight'); //    echo '<br>' . $tomorrow_midnight_time;
     $diff_till_end = date_diff($end_at, $current_time);
 
     return date_interval_format($diff_till_end, "%dд %H:%I");
