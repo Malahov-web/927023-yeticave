@@ -87,3 +87,44 @@ function get_lots($link): array
     }
     return mysqli_fetch_all($result_lots, MYSQLI_ASSOC);
 }
+
+
+function get_lot_single($link, $lot_id)
+{
+    $sql_lot_single = "SELECT l.id, l.created_at, l.title, l.description, l.img_url, l.price_start, l.end_at, l.bet_step, l.category_id, l.user_id, l.winner_user_id, c.title as cat_title FROM lot l
+      JOIN category c
+      ON l.category_id = c.id
+      WHERE l.id = $lot_id";
+    $result_lot_single = mysqli_query($link, $sql_lot_single);
+
+    if ($result_lot_single === false) {
+        $error = mysqli_error($link);
+        die(include_template('error.php', ['error' => $error]));
+    }
+
+    //echo $result_lot_single->num_rows;
+    if ($result_lot_single->num_rows == 0) {
+
+        $error = include_template(
+            '404.php',
+            [
+                'categories' => $categories,
+                'error' => 'Ошибка 404! Страница не найдена'
+            ]
+        );
+
+        die(include_template('layout.php',
+            [
+                'content' => $error,
+                'site_title' => $site_title,
+                'user_name' => $user_name,
+                'user_avatar' => $user_avatar,
+                'is_auth' => $is_auth,
+                'categories' => $categories,
+            ]
+        ));
+
+    }
+
+    return mysqli_fetch_assoc($result_lot_single);
+}
