@@ -1,45 +1,24 @@
-<?php // 2. Начало сценария-)
+<?php
 
 require_once 'init.php';
-require_once 'functions.php';
-require_once 'config.php';
 
-
-$link = init_database($database_config);
+//$link = init_database($database_config);
 
 $categories = get_categories($link);
-
+$lots = get_lots($link);
 
 if (!isset($_GET['id'])) {
-// else
-    $error = include_template(
-        '404.php',
-        [
-            'categories' => $categories,
-            'error' => 'Ошибка 404! Страница не найдена'
-        ]
-    );
-
-    die(include_template('layout.php',
-        [
-            'content' => $error,
-            'site_title' => $site_title,
-            'user_name' => $user_name,
-            'user_avatar' => $user_avatar,
-            'is_auth' => $is_auth,
-            'categories' => $categories,
-        ]
-    ));
-// else
-
+    die(get_layout_404($categories));
 }
-$lot_id = (int) $_GET['id'];
+$lot_id = (int)$_GET['id'];
 
+$lot_single = get_lot_single($link, $lot_id);
 
-$lot_single = get_lot_single($link, $_GET['id']);
+if (empty($lot_single)) {
+    die(get_layout_404($categories));
+}
 
-
-$lot = include_template(
+$lot_page = include_template(
     'lot.php',
     [
         'categories' => $categories,
@@ -47,16 +26,4 @@ $lot = include_template(
     ]
 );
 
-$layout = include_template(
-    'layout.php',
-    [
-        'content' => $lot,
-        'site_title' => $site_title,
-        'user_name' => $user_name,
-        'user_avatar' => $user_avatar,
-        'is_auth' => $is_auth,
-        'categories' => $categories,
-    ]
-);
-
-print($layout);
+print(get_layout($lot_page, $categories));

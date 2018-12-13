@@ -1,5 +1,7 @@
 <?php
 
+require_once 'init.php';
+
 function include_template($name, $data)
 {
     $name = 'templates/' . $name;
@@ -85,6 +87,7 @@ function get_lots($link): array
         $error = mysqli_error($link);
         die(include_template('error.php', ['error' => $error]));
     }
+
     return mysqli_fetch_all($result_lots, MYSQLI_ASSOC);
 }
 
@@ -102,28 +105,32 @@ function get_lot_single($link, int $lot_id): array
         die(include_template('error.php', ['error' => $error]));
     }
 
-    if ($result_lot_single->num_rows === 0) {
-
-        $error = include_template(
-            '404.php',
-            [
-                'categories' => $categories,
-                'error' => 'Ошибка 404! Страница не найдена'
-            ]
-        );
-
-        die(include_template('layout.php',
-            [
-                'content' => $error,
-                'site_title' => $site_title,
-                'user_name' => $user_name,
-                'user_avatar' => $user_avatar,
-                'is_auth' => $is_auth,
-                'categories' => $categories,
-            ]
-        ));
-
-    }
-
     return mysqli_fetch_assoc($result_lot_single);
+}
+
+
+function get_layout(string $content, array $categories): string
+{
+    $init_data = get_init_data();
+
+    return include_template(
+        'layout.php',
+        array_merge($init_data, [
+            'content' => $content,
+            'categories' => $categories,
+        ])
+    );
+}
+
+function get_layout_404(array $categories): string
+{
+    $error = include_template(
+        '404.php',
+        [
+            'categories' => $categories,
+            'error' => 'Ошибка 404! Страница не найдена'
+        ]
+    );
+
+    return get_layout($error, $categories);
 }
