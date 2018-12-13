@@ -1,30 +1,17 @@
 <?php // 2. Начало сценария-)
-$is_auth = rand(0, 1);
 
-$user_name = 'Kirill';
-$user_avatar = 'img/user.jpg';
-
-$site_title = 'YetiCave - интернет-аукцион';
-
-
+require_once 'init.php';
 require_once 'functions.php';
+require_once 'config.php';
 
-$database_config = [
-    'host' => 'localhost',
-    'user' => 'root',
-    'password' => '',
-    'database' => 'yeticave10'
-];
 
 $link = init_database($database_config);
 
 $categories = get_categories($link);
 
 
-if (isset($_GET['id'])) {
-    $lot_id = $_GET['id'];
-}
-else {
+if (!isset($_GET['id'])) {
+// else
     $error = include_template(
         '404.php',
         [
@@ -43,7 +30,11 @@ else {
             'categories' => $categories,
         ]
     ));
+// else
+
 }
+$lot_id = (int) $_GET['id'];
+
 
 $lot_single = get_lot_single($link, $_GET['id']);
 

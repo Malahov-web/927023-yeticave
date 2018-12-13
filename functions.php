@@ -89,7 +89,7 @@ function get_lots($link): array
 }
 
 
-function get_lot_single($link, $lot_id)
+function get_lot_single($link, int $lot_id): array
 {
     $sql_lot_single = "SELECT l.id, l.created_at, l.title, l.description, l.img_url, l.price_start, l.end_at, l.bet_step, l.category_id, l.user_id, l.winner_user_id, c.title as cat_title FROM lot l
       JOIN category c
@@ -102,8 +102,7 @@ function get_lot_single($link, $lot_id)
         die(include_template('error.php', ['error' => $error]));
     }
 
-    //echo $result_lot_single->num_rows;
-    if ($result_lot_single->num_rows == 0) {
+    if ($result_lot_single->num_rows === 0) {
 
         $error = include_template(
             '404.php',
