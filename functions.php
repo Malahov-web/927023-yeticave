@@ -112,34 +112,24 @@ function get_lot_single($link, int $lot_id): array
 
 function set_lot_single($link, array $lot): int
 {
-?><pre><?php var_dump($lot); ?></pre><?php 
+/* ?><pre><?php var_dump($lot); ?></pre><?php  */
 
-    $lot_name = $lot['lot-name'];
-    $category = $lot["category"];    $category = 1;    
-    $message = $lot['message'];
-    $lot_rate = $lot["lot-rate"] ;
-    $lot_step = $lot["lot-step"] ;
-    $lot_date = $lot["lot-date"] ;
-    $path = $lot["path"] ;
-    $lot_user_id = $lot["user_id"] ;
-   
-
-
-    // $sql_lot_single = "INSERT INTO lot (title, category_id, user_id, description, img_url, price_start, end_at, bet_step)
-        // VALUES ($lot_name, $category, $lot_user_id, $message, $path, $lot_rate, $lot_date, $lot_step);";
-        
-// $sql_lot_single = "INSERT INTO lot (title, category_id, user_id, description, img_url, price_start, end_at, bet_step)
-    // VALUES ('$lot_name', 1, $lot_user_id, '$message', '$path', $lot_rate, '$lot_date', $lot_step);";
+    $lot_name = $lot['title'];
+    $category = $lot["category_id"];   
+    $description = $lot['description'];
+    $price_start = $lot["price_start"] ;
+    $bet_step = $lot["bet_step"] ;
+    $end_at = $lot["end_at"] ;
+    $img_url = $lot["img_url"] ;
+    $user_id = $lot["user_id"] ;
     
-    // $sql_lot_single = "INSERT INTO lot (title, category_id, description,  price_start)
-// VALUES (?, ?, ?, ?)";    
-     $sql_lot_single = "INSERT INTO lot (title, category_id, description,  price_start, bet_step, end_at, img_url, user_id)
- VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql_lot_single = 'INSERT INTO lot (title, category_id, user_id, description, img_url, price_start, end_at, bet_step)
+ VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
 
 $stmt = mysqli_prepare($link, $sql_lot_single);
 // echo '<br>stmt: ' . $stmt;
-?><pre><?php var_dump($stmt); ?></pre><?php 
-mysqli_stmt_bind_param($stmt, 'siis', $lot_name, $category, $lot_user_id, $message, $path, $lot_rate, $lot_date, $lot_step);   //, $path, $lot_rate, $lot_date, $lot_step
+/* ?><pre><?php var_dump($stmt); ?></pre><?php  */
+mysqli_stmt_bind_param($stmt, 'siissisi', $lot_name, $category, $user_id, $description, $img_url, $price_start, $end_at, $bet_step);  
 
 $res = mysqli_stmt_execute($stmt);
 
@@ -150,20 +140,14 @@ if ($res) {
 }
 $lot_id = $res;
 
-echo '<br>res: ' . $res;
-?><pre><?php var_dump($lot_id); ?></pre><?php 
-
-  
-//    $result_lot_single = mysqli_query($link, $sql_lot_single);
-//?><pre><?php //var_dump($result_lot_single); ?></pre><?php   
-    
+/* echo '<br>res: ' . $res; */
+/* ?><pre><?php var_dump($lot_id); ?></pre><?php  */
 
     
     //$lot_id = mysqli_insert_id($link);
     
     return $lot_id;
-    echo '<br>lot_id' . $lot_id;
-    
+   
     
 }
 
