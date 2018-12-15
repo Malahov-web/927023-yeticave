@@ -112,26 +112,25 @@ function get_lot_single($link, int $lot_id): array
 
 function set_lot_single($link, array $lot): int
 {
+
     $sql_lot_single = "
 INSERT INTO lot (title, category_id, description,  price_start, bet_step, end_at, img_url, user_id)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
     $lot_id = db_insert_data($link, $sql_lot_single, $lot);
-//?><!--<pre>--><?php //var_dump($link) ?><!--</pre>--><?php
-//echo '<br>$lot_id: ' . $lot_id;
+
     if (!$lot_id) {
         $error = mysqli_error($link);
         die(include_template('error.php', ['error' => $error]));
     }
-//?><!--<pre>--><?php //var_dump($lot) ?><!--</pre>--><?php
-   // $lot_id = mysqli_insert_id($link);
+    $lot_id = mysqli_insert_id($link);
 
     return $lot_id;
 }
 
 
-function db_insert_data($link, $sql, array $data): int {
-?><pre><?php var_dump($sql) ?></pre><?php
+function db_insert_data($link, $sql, array $data): int 
+{
     $stmt = db_get_prepare_stmt($link, $sql, $data);
 
     $result = mysqli_stmt_execute($stmt);
