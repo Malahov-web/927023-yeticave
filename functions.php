@@ -112,66 +112,33 @@ function get_lot_single($link, int $lot_id): array
 
 function set_lot_single($link, array $lot): int
 {
-/* ?><pre><?php var_dump($lot); ?></pre><?php  */
-
     $lot_name = $lot['title'];
-    $category = $lot["category_id"];   
+    $category = $lot["category_id"];
     $description = $lot['description'];
-    $price_start = $lot["price_start"] ;
-    $bet_step = $lot["bet_step"] ;
-    $end_at = $lot["end_at"] ;
-    $img_url = $lot["img_url"] ;
-    $user_id = $lot["user_id"] ;
-    
-    $sql_lot_single = 'INSERT INTO lot (title, category_id, user_id, description, img_url, price_start, end_at, bet_step)
- VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+    $price_start = $lot["price_start"];
+    $bet_step = $lot["bet_step"];
+    $end_at = $lot["end_at"];
+    $img_url = $lot["img_url"];
+    $user_id = $lot["user_id"];
 
-$stmt = mysqli_prepare($link, $sql_lot_single);
-// echo '<br>stmt: ' . $stmt;
-/* ?><pre><?php var_dump($stmt); ?></pre><?php  */
-mysqli_stmt_bind_param($stmt, 'siissisi', $lot_name, $category, $user_id, $description, $img_url, $price_start, $end_at, $bet_step);  
+    $sql_lot_single = 'INSERT INTO lot (title, category_id, user_id, description, img_url, price_start, end_at, bet_step) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
 
-$res = mysqli_stmt_execute($stmt);
+    $stmt = mysqli_prepare($link, $sql_lot_single);
+    mysqli_stmt_bind_param($stmt, 'siissisi', $lot_name, $category, $user_id, $description, $img_url, $price_start, $end_at, $bet_step);
 
-//$lot_id = mysqli_insert_id($link);
-
-if ($res) {
-    $res = mysqli_insert_id($link);
-}
-$lot_id = $res;
-
-/* echo '<br>res: ' . $res; */
-/* ?><pre><?php var_dump($lot_id); ?></pre><?php  */
-
-    
-    //$lot_id = mysqli_insert_id($link);
-    
-    return $lot_id;
-   
-    
-}
-
-
-/*
-{
-
-    $sql_lot_single = "
-INSERT INTO lot (title, category_id, description,  price_start, bet_step, end_at, img_url, user_id)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-
-    $lot_id = db_insert_data($link, $sql_lot_single, $lot);
-
-    if (!$lot_id) {
-        $error = mysqli_error($link);
-        die(include_template('error.php', ['error' => $error]));
+    $res = mysqli_stmt_execute($stmt);
+    if ($res) {
+        $res = mysqli_insert_id($link);
     }
-    $lot_id = mysqli_insert_id($link);
+    $lot_id = $res;
 
     return $lot_id;
-}
-*/
 
-function db_insert_data($link, $sql, array $data): int 
+
+}
+
+
+function db_insert_data($link, $sql, array $data): int
 {
     $stmt = db_get_prepare_stmt($link, $sql, $data);
 

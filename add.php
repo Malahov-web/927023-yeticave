@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $lot_uploaded = $_POST;
 
-    $required_fields = ['title', 'category_id', 'description',  'price_start', 'bet_step', 'end_at'];
+    $required_fields = ['title', 'category_id', 'description', 'price_start', 'bet_step', 'end_at'];
     $number_fields = ['price_start', 'bet_step'];
     $errors = [];
 
@@ -29,9 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     ];
 
     foreach ($number_fields as $field) {
-        if ( gettype( (int) $_POST[$field] ) !== 'integer' && ((int)$_POST[$field]) <= 0 ) {
-        //if ( gettype( (int)$_POST[$field] ) !== 'integer' && ((int)$_POST[$field]) <= 0 ) {
-            // if ( filter_var($_POST[$field], FILTER_VALIDATE_FLOAT , $filter_options)  ) {
+        if (gettype((int)$_POST[$field]) !== 'integer' && ((int)$_POST[$field]) <= 0) {
             $errors[$field] = 'Необходимо корректно заполнить (указать число) поле';
         }
     }
@@ -48,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $errors['file'] = 'Загрузите картинку в формате PNG';
         } else {
             move_uploaded_file($temp_name, 'img/' . $path);
-            $lot_uploaded['img_url'] = $path;
+            $lot_uploaded['img_url'] = 'img/' . $path;
         }
     } else {
         $errors['file'] = 'Вы не загрузили файл';
@@ -56,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $lot_uploaded['user_id'] = 1;
 
-    if (count($errors)) {       
+    if (count($errors)) {
         $add = include_template(
             'add.php',
             [
@@ -68,26 +66,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         print(get_layout($add, $categories));
 
     } else {
-        //$lot_uploaded_id = set_lot_single($link, $lot_uploaded );
-        $lot_uploaded_id = (int) set_lot_single($link, $lot_uploaded);
-        
-//echo 'Ветвь 2' . $lot_uploaded_id; 
-        header("Location: http://malahov-web.ru");
-       // header("Location: lot.php?id=" . $lot_uploaded_id);
-/*
-        $add = include_template(
-            'lot.php'.$lot_uploaded_id,
-            [
-                'categories' => $categories,
-                'lot' => $lot_uploaded
-            ]
-        );
-        print(get_layout($add, $categories));
-        */
+        $lot_uploaded_id = set_lot_single($link, $lot_uploaded);
+        header("Location: lot.php?id=" . $lot_uploaded_id);
     }
 
-
-} else {   
+} else {
     $add = include_template(
         'add.php',
         [
@@ -97,7 +80,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     print(get_layout($add, $categories));
 
 }
-
-//print(get_layout($add, $categories));
-
 
