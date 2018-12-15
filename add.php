@@ -9,7 +9,7 @@ $lots = get_lots($link);
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $lot_uploaded = $_POST;
-
+/*
     $required_fields = ['title', 'category_id', 'description', 'price_start', 'bet_step', 'end_at'];
     $number_fields = ['price_start', 'bet_step'];
     $errors = [];
@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             'default' => 0, // значение, возвращаемое, если фильтрация завершилась неудачей
             'min_range' => 1
         ],
-        // 'flags' => FILTER_FLAG_ALLOW_OCTAL,
+        //  'flags' => FILTER_FLAG_ALLOW_OCTAL,
     ];
 
     foreach ($number_fields as $field) {
@@ -33,8 +33,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $errors[$field] = 'Необходимо корректно заполнить (указать число) поле';
         }
     }
+*/
+    $validate_data = validate_form_lot($lot_uploaded);
 
+    $errors = $validate_data['errors'];
+    $lot_uploaded = $validate_data['lot_uploaded'];
 
+/*
     if (isset($_FILES['img_url']['name'])) {
         $temp_name = $_FILES['img_url']['tmp_name'];
         $path = $_FILES['img_url']['name'];
@@ -51,6 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         $errors['file'] = 'Вы не загрузили файл';
     }
+*/
 
     $lot_uploaded['user_id'] = 1;
 

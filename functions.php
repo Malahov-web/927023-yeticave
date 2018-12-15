@@ -176,3 +176,62 @@ function get_layout_404(array $categories): string
 
     return get_layout($error, $categories);
 }
+
+
+function validate_form_lot(array $lot_uploaded): array {
+
+    $required_fields = ['title', 'category_id', 'description', 'price_start', 'bet_step', 'end_at'];
+    $number_fields = ['price_start', 'bet_step'];
+    $errors = [];
+
+    foreach ($required_fields as $field) {
+        if (empty ($_POST[$field])) {
+            $errors[$field] = 'Необходимо заполнить поле';
+        }
+    }
+
+    $filter_options = [
+        'options' => [
+            'default' => 0, // значение, возвращаемое, если фильтрация завершилась неудачей
+            'min_range' => 1
+        ],
+        //  'flags' => FILTER_FLAG_ALLOW_OCTAL,
+    ];
+
+    foreach ($number_fields as $field) {
+        if (gettype((int)$_POST[$field]) !== 'integer' && ((int)$_POST[$field]) <= 0) {
+            $errors[$field] = 'Необходимо корректно заполнить (указать число) поле';
+        }
+    }
+
+
+    if (isset($_FILES['img_url']['name'])) {
+        $temp_name = $_FILES['img_url']['tmp_name'];
+        $path = $_FILES['img_url']['name'];
+
+        $file_type = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $temp_name);
+
+        if ($file_type !== "image/png") {
+            $errors['file'] = 'Загрузите картинку в формате PNG';
+        } else {
+            //move_uploaded_file($temp_name, 'img/' . $path);
+           // $lot_uploaded['img_url'] = 'img/' . $path;
+            $lot_uploaded = set_uploaded_lot_file( $temp_name,  $path, $lot_uploaded);
+        }
+    } else {
+        $errors['file'] = 'Вы не загрузили файл';
+    }
+
+    $validate_data['errors'] = $error;
+    $validate_data['lot_uploaded'] = $lot_uploaded;
+
+    return $validate_data;
+}
+
+
+function set_uploaded_lot_file(string $temp_name, string $path, array $lot_uploaded): array {
+    move_uploaded_file($temp_name, 'img/' . $path);
+    $lot_uploaded['img_url'] = 'img/' . $path;
+
+    return $lot_uploaded;
+}
