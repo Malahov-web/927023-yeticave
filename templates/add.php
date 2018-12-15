@@ -1,3 +1,5 @@
+<pre><?php var_dump($lot); ?></pre>
+
 <main>
     <nav class="nav">
         <ul class="nav__list container">
@@ -31,7 +33,7 @@
                 <select id="category" name="category" required>
                     <option>Выберите категорию</option>
                     <?php foreach ($categories as $category): ?>
-                        <option value="<?= h($category['id'); ?>" <?= $class_selected = ($category['title'] === $lot['category']) ? "selected" : "" ?> ><?= h($category['title']); ?></option>
+                        <option value="<?= h($category['id']); ?>" <?= $class_selected = ($category['title'] === $lot['category']) ? "selected" : "" ?> ><?= h($category['title']); ?></option>
                     <?php endforeach; ?>
                 </select>
                 <span class="form__error"><?=$errors['category'];?></span>

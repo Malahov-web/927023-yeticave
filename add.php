@@ -29,7 +29,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     ];
 
     foreach ($number_fields as $field) {
-        if (gettype(((int)$_POST[$field]) !== 'integer') && ((int)$_POST[$field]) <= 0) {
+        if ( gettype( (int) $_POST[$field] ) !== 'integer' && ((int)$_POST[$field]) <= 0 ) {
+        //if ( gettype( (int)$_POST[$field] ) !== 'integer' && ((int)$_POST[$field]) <= 0 ) {
             // if ( filter_var($_POST[$field], FILTER_VALIDATE_FLOAT , $filter_options)  ) {
             $errors[$field] = 'Необходимо корректно заполнить (указать число) поле';
         }
@@ -66,7 +67,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         );
 
     } else {
-        $lot_uploaded_id = set_lot_single($link, $lot_uploaded );
+        //$lot_uploaded_id = set_lot_single($link, $lot_uploaded );
+        $lot_uploaded_id = set_lot_single($link, $lot_uploaded);
+        
 
         $add = include_template(
             'lot.php?id=$lot_uploaded_id',

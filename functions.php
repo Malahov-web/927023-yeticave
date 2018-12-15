@@ -112,6 +112,64 @@ function get_lot_single($link, int $lot_id): array
 
 function set_lot_single($link, array $lot): int
 {
+?><pre><?php var_dump($lot); ?></pre><?php 
+
+    $lot_name = $lot['lot-name'];
+    $category = $lot["category"];    $category = 1;    
+    $message = $lot['message'];
+    $lot_rate = $lot["lot-rate"] ;
+    $lot_step = $lot["lot-step"] ;
+    $lot_date = $lot["lot-date"] ;
+    $path = $lot["path"] ;
+    $lot_user_id = $lot["user_id"] ;
+   
+
+
+    // $sql_lot_single = "INSERT INTO lot (title, category_id, user_id, description, img_url, price_start, end_at, bet_step)
+        // VALUES ($lot_name, $category, $lot_user_id, $message, $path, $lot_rate, $lot_date, $lot_step);";
+        
+// $sql_lot_single = "INSERT INTO lot (title, category_id, user_id, description, img_url, price_start, end_at, bet_step)
+    // VALUES ('$lot_name', 1, $lot_user_id, '$message', '$path', $lot_rate, '$lot_date', $lot_step);";
+    
+    // $sql_lot_single = "INSERT INTO lot (title, category_id, description,  price_start)
+// VALUES (?, ?, ?, ?)";    
+     $sql_lot_single = "INSERT INTO lot (title, category_id, description,  price_start, bet_step, end_at, img_url, user_id)
+ VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+$stmt = mysqli_prepare($link, $sql_lot_single);
+// echo '<br>stmt: ' . $stmt;
+?><pre><?php var_dump($stmt); ?></pre><?php 
+mysqli_stmt_bind_param($stmt, 'siis', $lot_name, $category, $lot_user_id, $message, $path, $lot_rate, $lot_date, $lot_step);   //, $path, $lot_rate, $lot_date, $lot_step
+
+$res = mysqli_stmt_execute($stmt);
+
+//$lot_id = mysqli_insert_id($link);
+
+if ($res) {
+    $res = mysqli_insert_id($link);
+}
+$lot_id = $res;
+
+echo '<br>res: ' . $res;
+?><pre><?php var_dump($lot_id); ?></pre><?php 
+
+  
+//    $result_lot_single = mysqli_query($link, $sql_lot_single);
+//?><pre><?php //var_dump($result_lot_single); ?></pre><?php   
+    
+
+    
+    //$lot_id = mysqli_insert_id($link);
+    
+    return $lot_id;
+    echo '<br>lot_id' . $lot_id;
+    
+    
+}
+
+
+/*
+{
 
     $sql_lot_single = "
 INSERT INTO lot (title, category_id, description,  price_start, bet_step, end_at, img_url, user_id)
@@ -127,7 +185,7 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
     return $lot_id;
 }
-
+*/
 
 function db_insert_data($link, $sql, array $data): int 
 {
