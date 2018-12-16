@@ -295,6 +295,7 @@ function validate_form_lot(array $lot_uploaded): array
  *
  * @return array Данные лота
  */
+
 function set_uploaded_lot_file(string $temp_name, string $path, array $lot_uploaded): array
 {
     move_uploaded_file($temp_name, 'img/' . $path);
