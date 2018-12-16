@@ -106,7 +106,7 @@ function get_categories($link): array
         die(include_template('error.php', ['error' => $error]));
     }
 
-    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+    return mysqli_fetch_all($result, MYSQLI_ASSOC) ?? [];
 }
 
 /**
@@ -137,7 +137,7 @@ function get_lots($link): array
         die(include_template('error.php', ['error' => $error]));
     }
 
-    return mysqli_fetch_all($result_lots, MYSQLI_ASSOC);
+    return mysqli_fetch_all($result_lots, MYSQLI_ASSOC) ?? [];
 }
 
 /**
@@ -162,23 +162,6 @@ function get_lot_active($link, int $lot_id): array
         die(include_template('error.php', ['error' => $error]));
     }
 
-/*    $fake_arr = [];
-    echo gettype($fake_arr);*/
-/*    ?><!--<pre>   <?php var_dump( mysqli_fetch_assoc($result_lot_single) ); ?>
-    </pre>--><?php
-*/
-    //return mysqli_fetch_assoc($result_lot_single);
-    //return null; // Отладка // Будет Fatal error
-
-    //return (mysqli_fetch_assoc($result_lot_single) !== null ) ? mysqli_fetch_assoc($result_lot_single) : $fake_arr;
-/*    if (mysqli_fetch_assoc($result_lot_single) === null) {
-        return $fake_arr;
-    } else {
-        return mysqli_fetch_assoc($result_lot_single);
-    }*/
-
-    //return mysqli_fetch_assoc($result_lot_single) ;
-    //return null;
     return mysqli_fetch_assoc($result_lot_single) ?? [];
 }
 
@@ -191,7 +174,6 @@ function get_lot_active($link, int $lot_id): array
  * @return int ID добавленного лота
  */
 function add_lot_and_get_inserted_id($link, array $lot): int
-//function set_lot_single($link, array $lot): int
 {
     $lot_name = $lot['title'];
     $category = (int) $lot['category_id'];
@@ -204,13 +186,9 @@ function add_lot_and_get_inserted_id($link, array $lot): int
 
     $sql_lot_single = 'INSERT INTO lot (title, category_id, user_id, description, img_url, price_start, end_at, bet_step) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
 
-/*    $stmt = mysqli_prepare($link, $sql_lot_single);
-    mysqli_stmt_bind_param($stmt, 'siissisi', $lot_name, $category, $user_id, $description, $img_url, $price_start, $end_at, $bet_step);*/
-
     $stmt = db_get_prepare_stmt($link, $sql_lot_single, $data = [$lot_name, $category, $user_id, $description, $img_url, $price_start, $end_at, $bet_step ]);
-
     $res = mysqli_stmt_execute($stmt);
-    //$res = false; // Отладка
+
     if ($res) {
         $res = mysqli_insert_id($link);
     }
@@ -280,14 +258,6 @@ function validate_form_lot(array $lot_uploaded): array
         }
     }
 
-    $filter_options = [
-        'options' => [
-            'default' => 0, // значение, возвращаемое, если фильтрация завершилась неудачей
-            'min_range' => 1
-        ],
-        //  'flags' => FILTER_FLAG_ALLOW_OCTAL,
-    ];
-
     foreach ($number_fields as $field) {
         if (gettype((int)$_POST[$field]) !== 'integer' && ((int)$_POST[$field]) <= 0) {
             $errors[$field] = 'Необходимо корректно заполнить (указать число) поле';
@@ -304,8 +274,6 @@ function validate_form_lot(array $lot_uploaded): array
         if ($file_type !== "image/png") {
             $errors['file'] = 'Загрузите картинку в формате PNG';
         } else {
-            //move_uploaded_file($temp_name, 'img/' . $path);
-            // $lot_uploaded['img_url'] = 'img/' . $path;
             $lot_uploaded = set_uploaded_lot_file($temp_name, $path, $lot_uploaded);
         }
     } else {
