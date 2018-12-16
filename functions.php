@@ -9,9 +9,9 @@ require_once 'mysql_helper.php';
  * @param $name string Имя шаблона
  * @param $data array Данные для вывода
  *
- * @return object Шаблон страницы
+ * @return string Шаблон страницы
  */
-function include_template($name, $data)
+function include_template(string $name, array $data): string
 {
     $name = 'templates/' . $name;
     $result = '';
@@ -148,12 +148,13 @@ function get_lots($link): array
  *
  * @return array Выбранны лот
  */
-function get_lot_single($link, int $lot_id): array
+function get_lot_active($link, int $lot_id): array
 {
     $sql_lot_single = "SELECT l.id, l.created_at, l.title, l.description, l.img_url, l.price_start, l.end_at, l.bet_step, l.category_id, l.user_id, l.winner_user_id, c.title as cat_title FROM lot l
       JOIN category c
       ON l.category_id = c.id
-      WHERE l.id = $lot_id";
+      WHERE l.id = $lot_id
+      AND l.end_at > NOW()";
     $result_lot_single = mysqli_query($link, $sql_lot_single);
 
     if ($result_lot_single === false) {
@@ -161,7 +162,24 @@ function get_lot_single($link, int $lot_id): array
         die(include_template('error.php', ['error' => $error]));
     }
 
-    return mysqli_fetch_assoc($result_lot_single);
+/*    $fake_arr = [];
+    echo gettype($fake_arr);*/
+/*    ?><!--<pre>   <?php var_dump( mysqli_fetch_assoc($result_lot_single) ); ?>
+    </pre>--><?php
+*/
+    //return mysqli_fetch_assoc($result_lot_single);
+    //return null; // Отладка // Будет Fatal error
+
+    //return (mysqli_fetch_assoc($result_lot_single) !== null ) ? mysqli_fetch_assoc($result_lot_single) : $fake_arr;
+/*    if (mysqli_fetch_assoc($result_lot_single) === null) {
+        return $fake_arr;
+    } else {
+        return mysqli_fetch_assoc($result_lot_single);
+    }*/
+
+    //return mysqli_fetch_assoc($result_lot_single) ;
+    //return null;
+    return mysqli_fetch_assoc($result_lot_single) ?? [];
 }
 
 /**
@@ -172,23 +190,27 @@ function get_lot_single($link, int $lot_id): array
  *
  * @return int ID добавленного лота
  */
-function set_lot_single($link, array $lot): int
+function add_lot_and_get_inserted_id($link, array $lot): int
+//function set_lot_single($link, array $lot): int
 {
     $lot_name = $lot['title'];
-    $category = $lot["category_id"];
+    $category = (int) $lot['category_id'];
     $description = $lot['description'];
-    $price_start = $lot["price_start"];
-    $bet_step = $lot["bet_step"];
-    $end_at = $lot["end_at"];
-    $img_url = $lot["img_url"];
-    $user_id = $lot["user_id"];
+    $price_start = (int) $lot['price_start'];
+    $bet_step = $lot['bet_step'];
+    $end_at = $lot['end_at'];
+    $img_url = $lot['img_url'];
+    $user_id = (int) $lot['user_id'];
 
     $sql_lot_single = 'INSERT INTO lot (title, category_id, user_id, description, img_url, price_start, end_at, bet_step) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
 
-    $stmt = mysqli_prepare($link, $sql_lot_single);
-    mysqli_stmt_bind_param($stmt, 'siissisi', $lot_name, $category, $user_id, $description, $img_url, $price_start, $end_at, $bet_step);
+/*    $stmt = mysqli_prepare($link, $sql_lot_single);
+    mysqli_stmt_bind_param($stmt, 'siissisi', $lot_name, $category, $user_id, $description, $img_url, $price_start, $end_at, $bet_step);*/
+
+    $stmt = db_get_prepare_stmt($link, $sql_lot_single, $data = [$lot_name, $category, $user_id, $description, $img_url, $price_start, $end_at, $bet_step ]);
 
     $res = mysqli_stmt_execute($stmt);
+    //$res = false; // Отладка
     if ($res) {
         $res = mysqli_insert_id($link);
     }

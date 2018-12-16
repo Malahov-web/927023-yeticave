@@ -1,4 +1,4 @@
-<?php  
+<?php
 
 require_once 'init.php';
 
@@ -6,7 +6,7 @@ $categories = get_categories($link);
 $lots = get_lots($link);
 
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $lot_uploaded = $_POST;
 
@@ -15,23 +15,41 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $errors = $validate_data['errors'];
     $lot_uploaded = $validate_data['lot_uploaded'];
 
-    $lot_uploaded['user_id'] = 1;
+    //$lot_uploaded['user_id'] = 1;
+    $init_data = get_init_data();
+    $lot_uploaded['user_id'] = $init_data['user_id'];
 
-    if (count($errors)) {
-        $add = include_template(
-            'add.php',
-            [
-                'categories' => $categories,
-                'lot' => $lot_uploaded,
-                'errors' => $errors
-            ]
-        );
-        print(get_layout($add, $categories));
+/*    if (count($errors)) {
+            $add = include_template(
+                'add.php',
+                [
+                    'categories' => $categories,
+                    'lot' => $lot_uploaded,
+                    'errors' => $errors
+                ]
+            );
+            print(get_layout($add, $categories));
 
-    } else {
-        $lot_uploaded_id = set_lot_single($link, $lot_uploaded);
-        header("Location: lot.php?id=" . $lot_uploaded_id);
+        } else {
+            $lot_uploaded_id = set_lot_single($link, $lot_uploaded);
+            header("Location: lot.php?id=" . $lot_uploaded_id);
+        }*/
+
+    if (!count($errors)) {
+        $lot_uploaded_id = add_lot_and_get_inserted_id($link, $lot_uploaded);
+        //header("Location: lot.php?id=" . $lot_uploaded_id);
+        die(header("Location: lot.php?id=" . $lot_uploaded_id));
     }
+
+    $add = include_template(
+        'add.php',
+        [
+            'categories' => $categories,
+            'lot' => $lot_uploaded,
+            'errors' => $errors
+        ]
+    );
+    print(get_layout($add, $categories));
 
 } else {
     $add = include_template(
