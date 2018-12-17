@@ -1,4 +1,8 @@
 <?php
+ini_set('error_reporting', E_ALL);
+
+//error_reporting = E_ALL;
+//display_errors = 1;
 
 require_once 'init.php';
 
