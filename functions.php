@@ -176,17 +176,17 @@ function get_lot_active($link, int $lot_id): array
 function add_lot_and_get_inserted_id($link, array $lot): int
 {
     $lot_name = $lot['title'];
-    $category = (int) $lot['category_id'];
+    $category = (int)$lot['category_id'];
     $description = $lot['description'];
-    $price_start = (int) $lot['price_start'];
+    $price_start = (int)$lot['price_start'];
     $bet_step = $lot['bet_step'];
     $end_at = $lot['end_at'];
     $img_url = $lot['img_url'];
-    $user_id = (int) $lot['user_id'];
+    $user_id = (int)$lot['user_id'];
 
     $sql_lot_single = 'INSERT INTO lot (title, category_id, user_id, description, img_url, price_start, end_at, bet_step) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
 
-    $stmt = db_get_prepare_stmt($link, $sql_lot_single, $data = [$lot_name, $category, $user_id, $description, $img_url, $price_start, $end_at, $bet_step ]);
+    $stmt = db_get_prepare_stmt($link, $sql_lot_single, $data = [$lot_name, $category, $user_id, $description, $img_url, $price_start, $end_at, $bet_step]);
     $res = mysqli_stmt_execute($stmt);
 
     if ($res) {
@@ -295,7 +295,6 @@ function validate_form_lot(array $lot_uploaded): array
  *
  * @return array Данные лота
  */
-
 function set_uploaded_lot_file(string $temp_name, string $path, array $lot_uploaded, string $file_field_name): array
 {
     move_uploaded_file($temp_name, 'img/' . $path);
@@ -306,17 +305,15 @@ function set_uploaded_lot_file(string $temp_name, string $path, array $lot_uploa
 
 
 /**
- * Валидирует форму добавления юзера
+ * Валидирует форму добавления пользователя
  *
  * @param $user_uploaded array Данные из формы
  *
- * @return array [Ошибки; Данные лота]
+ * @return array [Ошибки; Данные юзера]
  */
-function validate_form_user($link, array $user_uploaded): array
+function validate_form_user(array $user_uploaded): array
 {
-
     $required_fields = ['email', 'password', 'name', 'contacts'];
-   // $number_fields = ['price_start', 'bet_step'];
     $errors = [];
 
     foreach ($required_fields as $field) {
@@ -325,78 +322,47 @@ function validate_form_user($link, array $user_uploaded): array
         }
     }
 
-    // email
-   // filter_var
-
-    // check is email already use
-    $email_already_use = is_email_already_use($link, $user_uploaded['email']);
-   // echo '$email_already_use: ' . $email_already_use;
-
-/*    if ( is_email_already_use($link, $user_uploaded['email']) ) {
-        $errors['email'] = 'Пользователь с этим email уже зарегистрирован';
-    }*/
-
-
-/*    foreach ($number_fields as $field) {
-        if (gettype((int)$_POST[$field]) !== 'integer' && ((int)$_POST[$field]) <= 0) {
-            $errors[$field] = 'Необходимо корректно заполнить (указать число) поле';
-        }
-    }*/
-
-// проверка аватара
-/*
-    if (isset($_FILES['avatar_url']['name'])) {
-        $temp_name = $_FILES['avatar_url']['tmp_name'];
-        $path = $_FILES['avatar_url']['name'];
-
-        $file_type = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $temp_name);
-
-        if ($file_type !== "image/jpeg")  {
-            $errors['avatar_url'] = 'Загрузите картинку в формате JPEG';
-        } else {
-            $user_uploaded = set_uploaded_lot_file($temp_name, $path, $user_uploaded);
-        }
-    } else {
-        //$errors['avatar_url'] = 'Вы не загрузили файл';
-    }*/
-
     $validate_data['errors'] = $errors;
     $validate_data['user_uploaded'] = $user_uploaded;
 
     return $validate_data;
 }
 
+/**
+ * Проверяет что указанный email уже не используется другим пользователем
+ *
+ * @param $link mysqli Ресурс соединения
+ * @param $email array Email пользователя
+ *
+ * @return int Флаг
+ */
+function is_email_already_use($link, string $email): int
+{
 
-function is_email_already_use($link, string $email): int {
-    // check is email already use
     $email = mysqli_real_escape_string($link, $email);
     $sql = "SELECT * FROM user WHERE email = '$email'";
     $result = mysqli_query($link, $sql);
 
-    return (mysqli_num_rows($result) > 0) ?  1 :  0;
-
-/*    if (mysqli_num_rows($result) > 0) {
-        return true;
-    } else {
-        return false;
-    }*/
+    return (mysqli_num_rows($result) > 0) ? 1 : 0;
 }
 
-
+/**
+ * Добавляет пользователя в БД
+ *
+ * @param $link mysqli Ресурс соединения
+ * @param $user array Данные о пользователе
+ *
+ * @return int ID добавленного пользователя
+ */
 function add_user_and_get_inserted_id($link, array $user): int
 {
     $email = $user['email'];
     $name = $user['name'];
-    //$password = $user['password'];
     $password = password_hash($user['password'], PASSWORD_DEFAULT);
-    //$avatar_url = $user['avatar_url']; // !Проблема: в $user['avatar_url']
-    //$avatar_url = '123';
     $contacts = $user['contacts'];
 
-    //$sql_user = 'INSERT INTO user (email, name, password, avatar_url, contacts) VALUES (?, ?, ?, ?, ?)';
     $sql_user = 'INSERT INTO user (email, name, password,  contacts) VALUES (?, ?, ?, ?)';
 
-   // $stmt = db_get_prepare_stmt($link, $sql_user, $data = [$email, $name, $password, $avatar_url, $contacts]);
     $stmt = db_get_prepare_stmt($link, $sql_user, $data = [$email, $name, $password, $contacts]);
     $res = mysqli_stmt_execute($stmt);
 
@@ -409,18 +375,23 @@ function add_user_and_get_inserted_id($link, array $user): int
 }
 
 
-
-//is_email_valid
-
-function is_email_valid(string $email):string {
+function is_email_valid(string $email): string
+{
     $email = filter_var($email, FILTER_VALIDATE_EMAIL);
 
     return $email ?? '';
 }
 
-
-function check_avatar(array $errors, array $user_uploaded): array {
-    // проверить аватар
+/**
+ * Проверяет был ли добавлен в форму аватар, поле avatar_url
+ *
+ * @param $errors array Ошибки валидации
+ * @param $user_uploaded array Данные из формы
+ *
+ * @return array [Ошибки; Данные юзера, Флаг]
+ */
+function check_avatar(array $errors, array $user_uploaded): array
+{
 
     if (isset($_FILES['avatar_url']['name'])) {
         $temp_name = $_FILES['avatar_url']['tmp_name'];
@@ -428,16 +399,12 @@ function check_avatar(array $errors, array $user_uploaded): array {
 
         $file_type = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $temp_name);
 
-        if ($file_type !== "image/jpeg")  {
+        if ($file_type !== "image/jpeg") {
             $errors['avatar_url'] = 'Загрузите картинку в формате JPEG';
         } else {
             $user_uploaded = set_uploaded_lot_file($temp_name, $path, $user_uploaded, 'avatar_url');
-
-            // запись в бд
             $avatar_is_valid = 1;
         }
-    } else {
-        //$errors['avatar_url'] = 'Вы не загрузили файл';
     }
 
     $check_avatar['errors'] = $errors;
@@ -447,22 +414,19 @@ function check_avatar(array $errors, array $user_uploaded): array {
     return $check_avatar;
 }
 
+/**
+ * Добавляет аватар пользователя в БД
+ *
+ * @param $link mysqli Ресурс соединения
+ * @param $user_id int Id пользователя
+ * @param $avatar_url string URL аватара
+ *
+ * @return int ID пользователя
+ */
+function add_user_avatar($link, int $user_id, string $avatar_url): int
+{
 
-function add_user_avatar($link, int $user_id, string $avatar_url): int {
-
-//    $sql_user_avatar = 'INSERT INTO user (avatar_url) VALUES (?)
-//        WHERE id=(SELECT max(id) FROM user)
-//';
-//
-//    $stmt = db_get_prepare_stmt($link, $sql_user_avatar, $data = [$avatar_url]);
-//    $res = mysqli_stmt_execute($stmt);
-
-//    $sql_user_avatar = "INSERT INTO user avatar_url VALUES '$avatar_url'
-//        WHERE id = '$user_id'
-
-$sql_user_avatar = "UPDATE user SET avatar_url = '$avatar_url'
-WHERE id= $user_id";
-
+    $sql_user_avatar = "UPDATE user SET avatar_url = '$avatar_url' WHERE id= $user_id";
     $res = mysqli_query($link, $sql_user_avatar);
 
     if ($res) {
