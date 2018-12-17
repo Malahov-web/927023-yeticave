@@ -303,3 +303,105 @@ function set_uploaded_lot_file(string $temp_name, string $path, array $lot_uploa
 
     return $lot_uploaded;
 }
+
+
+/**
+ * Валидирует форму добавления юзера
+ *
+ * @param $user_uploaded array Данные из формы
+ *
+ * @return array [Ошибки; Данные лота]
+ */
+function validate_form_user($link, array $user_uploaded): array
+{
+
+    $required_fields = ['email', 'password', 'name', 'contacts'];
+   // $number_fields = ['price_start', 'bet_step'];
+    $errors = [];
+
+    foreach ($required_fields as $field) {
+        if (empty ($_POST[$field])) {
+            $errors[$field] = 'Необходимо заполнить поле';
+        }
+    }
+
+    // email
+   // filter_var
+
+    // check is email already use
+    $email_already_use = is_email_already_use($link, $user_uploaded['email']);
+   // echo '$email_already_use: ' . $email_already_use;
+
+    if ( is_email_already_use($link, $user_uploaded['email']) ) {
+        $errors['email'] = 'Пользователь с этим email уже зарегистрирован';
+    }
+
+
+/*    foreach ($number_fields as $field) {
+        if (gettype((int)$_POST[$field]) !== 'integer' && ((int)$_POST[$field]) <= 0) {
+            $errors[$field] = 'Необходимо корректно заполнить (указать число) поле';
+        }
+    }*/
+
+
+    if (isset($_FILES['avatar_url']['name'])) {
+        $temp_name = $_FILES['avatar_url']['tmp_name'];
+        $path = $_FILES['avatar_url']['name'];
+
+        $file_type = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $temp_name);
+
+        if ($file_type !== "image/jpeg")  {
+            $errors['avatar_url'] = 'Загрузите картинку в формате JPEG';
+        } else {
+            $user_uploaded = set_uploaded_lot_file($temp_name, $path, $user_uploaded);
+        }
+    } else {
+        //$errors['avatar_url'] = 'Вы не загрузили файл';
+    }
+
+    $validate_data['errors'] = $errors;
+    $validate_data['user_uploaded'] = $user_uploaded;
+
+    return $validate_data;
+}
+
+
+
+function is_email_already_use($link, string $email): int {
+    // check is email already use
+    $email = mysqli_real_escape_string($link, $email);
+    $sql = "SELECT * FROM user WHERE email = '$email'";
+    $result = mysqli_query($link, $sql);
+
+    return (mysqli_num_rows($result) > 0) ?  1 :  0;
+
+/*    if (mysqli_num_rows($result) > 0) {
+        return true;
+    } else {
+        return false;
+    }*/
+}
+
+
+function add_user_and_get_inserted_id($link, array $user): int
+{
+    $email = $user['email'];
+    $name = $user['name'];
+    $password = $user['password'];
+    $avatar_url = $user['avatar_url']; // !Проблема: в $user['avatar_url']
+    $avatar_url = '123';
+    $contacts = $user['contacts'];
+
+    $sql_user = 'INSERT INTO user (email, name, password, avatar_url, contacts) VALUES (?, ?, ?, ?, ?)';
+    //$sql_user = 'INSERT INTO user (email, name, password,  contacts) VALUES (?, ?, ?, ?)';
+
+    $stmt = db_get_prepare_stmt($link, $sql_user, $data = [$email, $name, $password, $avatar_url, $contacts]);
+    $res = mysqli_stmt_execute($stmt);
+
+    if ($res) {
+        $res = mysqli_insert_id($link);
+    }
+    $lot_id = $res;
+
+    return $lot_id;
+}
