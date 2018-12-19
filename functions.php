@@ -9,9 +9,9 @@ require_once 'mysql_helper.php';
  * @param $name string Имя шаблона
  * @param $data array Данные для вывода
  *
- * @return object Шаблон страницы
+ * @return string Шаблон страницы
  */
-function include_template($name, $data)
+function include_template(string $name, array $data): string
 {
     $name = 'templates/' . $name;
     $result = '';
@@ -106,7 +106,7 @@ function get_categories($link): array
         die(include_template('error.php', ['error' => $error]));
     }
 
-    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+    return mysqli_fetch_all($result, MYSQLI_ASSOC) ?? [];
 }
 
 /**
@@ -137,7 +137,7 @@ function get_lots($link): array
         die(include_template('error.php', ['error' => $error]));
     }
 
-    return mysqli_fetch_all($result_lots, MYSQLI_ASSOC);
+    return mysqli_fetch_all($result_lots, MYSQLI_ASSOC) ?? [];
 }
 
 /**
@@ -148,12 +148,13 @@ function get_lots($link): array
  *
  * @return array Выбранны лот
  */
-function get_lot_single($link, int $lot_id): array
+function get_lot_active($link, int $lot_id): array
 {
     $sql_lot_single = "SELECT l.id, l.created_at, l.title, l.description, l.img_url, l.price_start, l.end_at, l.bet_step, l.category_id, l.user_id, l.winner_user_id, c.title as cat_title FROM lot l
       JOIN category c
       ON l.category_id = c.id
-      WHERE l.id = $lot_id";
+      WHERE l.id = $lot_id
+      AND l.end_at > NOW()";
     $result_lot_single = mysqli_query($link, $sql_lot_single);
 
     if ($result_lot_single === false) {
@@ -161,7 +162,7 @@ function get_lot_single($link, int $lot_id): array
         die(include_template('error.php', ['error' => $error]));
     }
 
-    return mysqli_fetch_assoc($result_lot_single);
+    return mysqli_fetch_assoc($result_lot_single) ?? [];
 }
 
 /**
@@ -172,23 +173,22 @@ function get_lot_single($link, int $lot_id): array
  *
  * @return int ID добавленного лота
  */
-function set_lot_single($link, array $lot): int
+function add_lot_and_get_inserted_id($link, array $lot): int
 {
     $lot_name = $lot['title'];
-    $category = $lot["category_id"];
+    $category = (int) $lot['category_id'];
     $description = $lot['description'];
-    $price_start = $lot["price_start"];
-    $bet_step = $lot["bet_step"];
-    $end_at = $lot["end_at"];
-    $img_url = $lot["img_url"];
-    $user_id = $lot["user_id"];
+    $price_start = (int) $lot['price_start'];
+    $bet_step = $lot['bet_step'];
+    $end_at = $lot['end_at'];
+    $img_url = $lot['img_url'];
+    $user_id = (int) $lot['user_id'];
 
     $sql_lot_single = 'INSERT INTO lot (title, category_id, user_id, description, img_url, price_start, end_at, bet_step) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
 
-    $stmt = mysqli_prepare($link, $sql_lot_single);
-    mysqli_stmt_bind_param($stmt, 'siissisi', $lot_name, $category, $user_id, $description, $img_url, $price_start, $end_at, $bet_step);
-
+    $stmt = db_get_prepare_stmt($link, $sql_lot_single, $data = [$lot_name, $category, $user_id, $description, $img_url, $price_start, $end_at, $bet_step ]);
     $res = mysqli_stmt_execute($stmt);
+
     if ($res) {
         $res = mysqli_insert_id($link);
     }
@@ -258,14 +258,6 @@ function validate_form_lot(array $lot_uploaded): array
         }
     }
 
-    $filter_options = [
-        'options' => [
-            'default' => 0, // значение, возвращаемое, если фильтрация завершилась неудачей
-            'min_range' => 1
-        ],
-        //  'flags' => FILTER_FLAG_ALLOW_OCTAL,
-    ];
-
     foreach ($number_fields as $field) {
         if (gettype((int)$_POST[$field]) !== 'integer' && ((int)$_POST[$field]) <= 0) {
             $errors[$field] = 'Необходимо корректно заполнить (указать число) поле';
@@ -282,8 +274,6 @@ function validate_form_lot(array $lot_uploaded): array
         if ($file_type !== "image/png") {
             $errors['file'] = 'Загрузите картинку в формате PNG';
         } else {
-            //move_uploaded_file($temp_name, 'img/' . $path);
-            // $lot_uploaded['img_url'] = 'img/' . $path;
             $lot_uploaded = set_uploaded_lot_file($temp_name, $path, $lot_uploaded);
         }
     } else {

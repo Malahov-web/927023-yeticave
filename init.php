@@ -10,6 +10,7 @@ function get_init_data(): array
         'user_name' => 'Kirill',
         'user_avatar' => 'img/user.jpg',
         'site_title' => 'YetiCave - интернет-аукцион',
+        'user_id' => 1,
     ];
 }
 

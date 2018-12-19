@@ -2,8 +2,6 @@
 
 require_once 'init.php';
 
-//$link = init_database($database_config);
-
 $categories = get_categories($link);
 $lots = get_lots($link);
 
@@ -12,7 +10,7 @@ if (!isset($_GET['id'])) {
 }
 $lot_id = (int)$_GET['id'];
 
-$lot_single = get_lot_single($link, $lot_id);
+$lot_single = get_lot_active($link, $lot_id);
 
 if (empty($lot_single)) {
     die(get_layout_404($categories));
