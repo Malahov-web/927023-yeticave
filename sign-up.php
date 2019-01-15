@@ -15,17 +15,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user_uploaded = $validate_data['user_uploaded'];
 
     $user_uploaded['email'] = is_email_valid($user_uploaded['email']);
-    if ( !$user_uploaded['email'] ) {
+    if (!$user_uploaded['email']) {
         $errors['email'] = 'Необходимо указать корректный email';
     }
 
-    if ( is_email_already_use($link, $user_uploaded['email']) ) {
+    if (is_email_already_use($link, $user_uploaded['email'])) {
         $errors['email'] = 'Пользователь с этим email уже зарегистрирован';
     }
 
 
     if (!count($errors)) {
-        $user_uploaded_id = (int) add_user_and_get_inserted_id($link, $user_uploaded);
+        $user_uploaded_id = (int)add_user_and_get_inserted_id($link, $user_uploaded);
 
         $check_avatar = check_avatar($errors, $user_uploaded);
         $errors = $check_avatar['errors'];
@@ -43,8 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'sign-up.php',
         [
             'categories' => $categories,
-            'user'       => $user_uploaded,
-            'errors'     => $errors
+            'user' => $user_uploaded,
+            'errors' => $errors
         ]
     );
     print(get_layout($add, $categories));
