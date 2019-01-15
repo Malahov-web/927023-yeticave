@@ -317,7 +317,7 @@ function validate_form_user(array $user_uploaded): array
     $errors = [];
 
     foreach ($required_fields as $field) {
-        if (empty ($_POST[$field])) {
+        if (empty ($user_uploaded[$field])) {
             $errors[$field] = 'Необходимо заполнить поле';
         }
     }
@@ -374,7 +374,13 @@ function add_user_and_get_inserted_id($link, array $user): int
     return $lot_id;
 }
 
-
+/**
+ * Проверяет валидность Email
+ *
+ * @param $email string Email-адрес
+ *
+ * @return string Email-адрес отфильтрованный
+ */
 function is_email_valid(string $email): string
 {
     $email = filter_var($email, FILTER_VALIDATE_EMAIL);
@@ -392,11 +398,10 @@ function is_email_valid(string $email): string
  */
 function check_avatar(array $errors, array $user_uploaded): array
 {
-
-    if (isset($_FILES['avatar_url']['name'])) {
+//    if (isset($_FILES['avatar_url']['name'])) {
+    if (!empty($_FILES['avatar_url']['name'])) {
         $temp_name = $_FILES['avatar_url']['tmp_name'];
         $path = $_FILES['avatar_url']['name'];
-
         $file_type = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $temp_name);
 
         if ($file_type !== "image/jpeg") {
