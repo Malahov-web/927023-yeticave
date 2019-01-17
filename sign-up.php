@@ -1,4 +1,7 @@
 <?php
+//ini_set('error_reporting', E_ALL);
+//ini_set('display_errors', 1);
+//ini_set('display_startup_errors', 1);
 
 require_once 'init.php';
 
@@ -23,19 +26,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['email'] = 'Пользователь с этим email уже зарегистрирован';
     }
 
+    $check_avatar = check_avatar($errors, $user_uploaded);
+    $errors = $check_avatar['errors'];
+    $user_uploaded = $check_avatar['user_uploaded'];
+    $avatar_is_valid = $check_avatar['avatar_is_valid'];
 
-    if (!count($errors)) {
+    if (!count($errors) && $avatar_is_valid) {
         $user_uploaded_id = (int)add_user_and_get_inserted_id($link, $user_uploaded);
-
-        $check_avatar = check_avatar($errors, $user_uploaded);
-        $errors = $check_avatar['errors'];
-        $user_uploaded = $check_avatar['user_uploaded'];
-        $avatar_is_valid = $check_avatar['avatar_is_valid'];
-
-        if ($avatar_is_valid) {
-            add_user_avatar($link, $user_uploaded_id, $user_uploaded['avatar_url']);
-        }
-
+        add_user_avatar($link, $user_uploaded_id, $user_uploaded['avatar_url']);
         die(header("Location: index.php"));
     }
 

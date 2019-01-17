@@ -55,7 +55,7 @@
             <div class="preview">
                 <button class="preview__remove" type="button">x</button>
                 <div class="preview__img">
-                    <img src="img/avatar.jpg" width="113" height="113" alt="Ваш аватар">
+                    <img src="<?= $value = isset($user['avatar_url']) ? $user['avatar_url'] : ""; ?>" width="113" height="113" alt="Ваш аватар">
                 </div>
             </div>
             <div class="form__input-file">
@@ -64,6 +64,7 @@
                     <span>+ Добавить</span>
                 </label>
             </div>
+            <span class="form__error"><?= $errors['avatar_url']; ?></span>
         </div>
 
         <span class="form__error form__error--bottom">Пожалуйста, исправьте ошибки в форме.</span>
