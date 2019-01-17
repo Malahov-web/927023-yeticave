@@ -1,8 +1,4 @@
 <?php
-ini_set('error_reporting', E_ALL);
-
-//error_reporting = E_ALL;
-//display_errors = 1;
 
 require_once 'init.php';
 
@@ -34,7 +30,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'errors' => $errors
         ]
     );
+
     print(get_layout($add, $categories));
+
 
 } else {
     $add = include_template(

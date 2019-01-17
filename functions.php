@@ -150,11 +150,13 @@ function get_lots($link): array
  */
 function get_lot_active($link, int $lot_id): array
 {
-    $sql_lot_single = "SELECT l.id, l.created_at, l.title, l.description, l.img_url, l.price_start, l.end_at, l.bet_step, l.category_id, l.user_id, l.winner_user_id, c.title as cat_title FROM lot l
-      JOIN category c
-      ON l.category_id = c.id
-      WHERE l.id = $lot_id
-      AND l.end_at > NOW()";
+    $sql_lot_single = "SELECT l.id, l.created_at, l.title, l.description, l.img_url, l.price_start, l.end_at, 
+        l.bet_step, l.category_id, l.user_id, l.winner_user_id, c.title as cat_title 
+        FROM lot l
+            JOIN category c
+        ON l.category_id = c.id
+            WHERE l.id = $lot_id
+            AND l.end_at > NOW()";
     $result_lot_single = mysqli_query($link, $sql_lot_single);
 
     if ($result_lot_single === false) {
@@ -189,12 +191,27 @@ function add_lot_and_get_inserted_id($link, array $lot): int
     $stmt = db_get_prepare_stmt($link, $sql_lot_single, $data = [$lot_name, $category, $user_id, $description, $img_url, $price_start, $end_at, $bet_step]);
     $res = mysqli_stmt_execute($stmt);
 
-    if ($res) {
-        $res = mysqli_insert_id($link);
-    }
-    $lot_id = $res;
+//    if ($res) {
+////        $res = mysqli_insert_id($link);
+//        return mysqli_insert_id($link);
+//    } else {
+//        return $res;
+//    }
+
+    $lot_id = get_inserted_id($res, $link);
+
+    //$lot_id = $res;
+    //return $lot_id;
 
     return $lot_id;
+}
+
+function get_inserted_id ($res, $link): int {
+
+     if ($res) {
+         $inserted_id = mysqli_insert_id($link);
+     }
+     return $inserted_id;
 }
 
 /**
@@ -223,7 +240,7 @@ function get_layout(string $content, array $categories): string
  *
  * @param $categories array Категории
  *
- * @return string ?
+ * @return string
  */
 function get_layout_404(array $categories): string
 {
@@ -343,7 +360,8 @@ function is_email_already_use($link, string $email): int
     $sql = "SELECT * FROM user WHERE email = '$email'";
     $result = mysqli_query($link, $sql);
 
-    return (mysqli_num_rows($result) > 0) ? 1 : 0;
+//    return (mysqli_num_rows($result) > 0) ? 1 : 0;
+    return mysqli_num_rows($result);
 }
 
 /**
@@ -366,11 +384,7 @@ function add_user_and_get_inserted_id($link, array $user): int
     $stmt = db_get_prepare_stmt($link, $sql_user, $data = [$email, $name, $password, $contacts]);
     $res = mysqli_stmt_execute($stmt);
 
-    if ($res) {
-        $res = mysqli_insert_id($link);
-    }
-    $lot_id = $res;
-
+    $lot_id = get_inserted_id($res, $link);
     return $lot_id;
 }
 
@@ -383,9 +397,7 @@ function add_user_and_get_inserted_id($link, array $user): int
  */
 function is_email_valid(string $email): string
 {
-    $email = filter_var($email, FILTER_VALIDATE_EMAIL);
-
-    return $email ?? '';
+    return filter_var($email, FILTER_VALIDATE_EMAIL);
 }
 
 /**
@@ -398,6 +410,7 @@ function is_email_valid(string $email): string
  */
 function check_avatar(array $errors, array $user_uploaded): array
 {
+    $avatar_is_valid = 0;
 //    if (isset($_FILES['avatar_url']['name'])) {
     if (!empty($_FILES['avatar_url']['name'])) {
         $temp_name = $_FILES['avatar_url']['tmp_name'];
@@ -410,6 +423,10 @@ function check_avatar(array $errors, array $user_uploaded): array
             $user_uploaded = set_uploaded_lot_file($temp_name, $path, $user_uploaded, 'avatar_url');
             $avatar_is_valid = 1;
         }
+
+    } else {
+
+
     }
 
     $check_avatar['errors'] = $errors;
@@ -431,7 +448,7 @@ function check_avatar(array $errors, array $user_uploaded): array
 function add_user_avatar($link, int $user_id, string $avatar_url): int
 {
 
-    $sql_user_avatar = "UPDATE user SET avatar_url = '$avatar_url' WHERE id= $user_id";
+    $sql_user_avatar = "UPDATE user SET avatar_url = '$avatar_url' WHERE id = $user_id";
     $res = mysqli_query($link, $sql_user_avatar);
 
     if ($res) {
