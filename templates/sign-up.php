@@ -45,7 +45,7 @@
         <?php $class_invalid = isset($errors['contacts']) ? "form__item--invalid" : ""; ?>
         <div class="form__item <?= $class_invalid; ?>">
             <label for="contacts">Контактные данные*</label>
-            <textarea id="contacts" name="contacts" value="<?= $value = isset($user['contacts']) ? $user['contacts'] : ""; ?>" placeholder="Напишите как с вами связаться" ></textarea>
+            <textarea id="contacts" name="contacts" value="" placeholder="Напишите как с вами связаться" ><?= $value = isset($user['contacts']) ? $user['contacts'] : ""; ?></textarea>
             <span class="form__error"><?= $errors['contacts']; ?></span>
         </div>
 

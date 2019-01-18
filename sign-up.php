@@ -1,7 +1,4 @@
 <?php
-//ini_set('error_reporting', E_ALL);
-//ini_set('display_errors', 1);
-//ini_set('display_startup_errors', 1);
 
 require_once 'init.php';
 
@@ -31,9 +28,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user_uploaded = $check_avatar['user_uploaded'];
     $avatar_is_valid = $check_avatar['avatar_is_valid'];
 
-    if (!count($errors) && $avatar_is_valid) {
+    if (!count($errors)) {
         $user_uploaded_id = (int)add_user_and_get_inserted_id($link, $user_uploaded);
-        add_user_avatar($link, $user_uploaded_id, $user_uploaded['avatar_url']);
+        if ( !empty($user_uploaded['avatar_url']) )  {
+            add_user_avatar($link, $user_uploaded_id, $user_uploaded['avatar_url']);
+        }
         die(header("Location: index.php"));
     }
 
@@ -45,10 +44,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'errors' => $errors
         ]
     );
-    print(get_layout($add, $categories));
+//    print(get_layout($add, $categories));
+    die(get_layout($add, $categories));
 
-
-} else {
+}
+//else {
 
     $add = include_template(
         'sign-up.php',
@@ -57,4 +57,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]
     );
     print(get_layout($add, $categories));
-}
+//}

@@ -190,8 +190,17 @@ function get_N_questions(int $n):string {
     return $questions;
 }
 
-function insert_and_get_last_id(array $record, string $tableName, $link): int {
-    $sql = sprintf("INSERT INTO $tableName (%s) VALUES (%s)",
+/**
+ * Добавляет запись в БД и получает ID записи
+ *
+ * @param $record array Данные о записи*
+ * @param $table_name string Имя таблицы*
+ * @param $link mysqli Ресурс соединения
+ *
+ * @return int ID добавленной записи
+ */
+function insert_and_get_last_id(array $record, string $table_name, $link): int {
+    $sql = sprintf("INSERT INTO $table_name (%s) VALUES (%s)",
         implode(',', array_keys($record)),
         get_N_questions(count($record))
     );
@@ -275,13 +284,13 @@ function validate_form_lot(array $lot_uploaded): array
     $errors = [];
 
     foreach ($required_fields as $field) {
-        if (empty ($_POST[$field])) {
+        if (empty ($lot_uploaded[$field])) {
             $errors[$field] = 'Необходимо заполнить поле';
         }
     }
 
     foreach ($number_fields as $field) {
-        if (gettype((int)$_POST[$field]) !== 'integer' && ((int)$_POST[$field]) <= 0) {
+        if (gettype((int)$lot_uploaded[$field]) !== 'integer' && ((int)$lot_uploaded[$field]) <= 0) {
             $errors[$field] = 'Необходимо корректно заполнить (указать число) поле';
         }
         $lot_uploaded[$field] = (int)$lot_uploaded[$field];
@@ -346,6 +355,7 @@ function validate_form_user(array $user_uploaded): array
             $errors[$field] = 'Необходимо заполнить поле';
         }
     }
+//    $user_uploaded['password'] = password_hash($user_uploaded['password'], PASSWORD_DEFAULT);
 
     $validate_data['errors'] = $errors;
     $validate_data['user_uploaded'] = $user_uploaded;
@@ -382,6 +392,9 @@ function is_email_already_use($link, string $email): int
  */
 function add_user_and_get_inserted_id($link, array $user): int
 {
+    $user['password'] = password_hash($user['password'], PASSWORD_DEFAULT);
+    return insert_and_get_last_id($user, 'user', $link);
+/*
     $email = $user['email'];
     $name = $user['name'];
     $password = password_hash($user['password'], PASSWORD_DEFAULT);
@@ -394,6 +407,7 @@ function add_user_and_get_inserted_id($link, array $user): int
 
     $lot_id = get_inserted_id($res, $link);
     return $lot_id;
+   */
 }
 
 /**
@@ -433,8 +447,7 @@ function check_avatar(array $errors, array $user_uploaded): array
         }
 
     } else {
-
-
+        $avatar_is_valid = 1;
     }
 
     $check_avatar['errors'] = $errors;

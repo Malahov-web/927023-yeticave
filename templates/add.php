@@ -52,8 +52,8 @@
         <div class="form__item form__item--wide <?= $class_invalid; ?>">
             <label for="description">Описание</label>
             <textarea id="description" name="description"
-                      value="<?= $value = isset($lot['description']) ? $lot['description'] : ""; ?>"
-                      required></textarea>
+                      value=""
+                      required><?= $value = isset($lot['description']) ? $lot['description'] : ""; ?></textarea>
             <span class="form__error"><?= $errors['description']; ?></span>
         </div>
 
@@ -68,7 +68,7 @@
                 </div>
             </div>
             <div class="form__input-file">
-                <input class="visually-" type="file" id="photo2" value="" name="img_url">
+                <input class="visually-hidden" type="file" id="photo2" value="" name="img_url">
                 <label for="photo2">
                     <span>+ Добавить</span>
                 </label>

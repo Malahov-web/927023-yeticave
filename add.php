@@ -31,11 +31,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]
     );
 
-    print(get_layout($add, $categories));
-
+//    print(get_layout($add, $categories));
+    die(get_layout($add, $categories));
 
 }
-else {
+//else {
     $add = include_template(
         'add.php',
         [
@@ -44,4 +44,4 @@ else {
     );
     print(get_layout($add, $categories));
 
-}
+//}
