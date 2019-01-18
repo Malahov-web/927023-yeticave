@@ -177,37 +177,39 @@ function get_lot_active($link, int $lot_id): array
  */
 function add_lot_and_get_inserted_id($link, array $lot): int
 {
-    $lot_name = $lot['title'];
-    $category = (int)$lot['category_id'];
-    $description = $lot['description'];
-    $price_start = (int)$lot['price_start'];
-    $bet_step = $lot['bet_step'];
-    $end_at = $lot['end_at'];
-    $img_url = $lot['img_url'];
-    $user_id = (int)$lot['user_id'];
-//    $lot['user_id'] = 1;
-//    $user_id = 3;
-//?><!--<pre>--><?php //var_dump($lot); ?><!--</pre>--><?php
-    $sql_lot_single = 'INSERT INTO lot (title, category_id, user_id, description, img_url, price_start, end_at, bet_step) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-
-    $stmt = db_get_prepare_stmt($link, $sql_lot_single, $data = [$lot_name, $category, $user_id, $description, $img_url, $price_start, $end_at, $bet_step]);
-    $res = mysqli_stmt_execute($stmt);
-
-//    if ($res) {
-////        $res = mysqli_insert_id($link);
-//        return mysqli_insert_id($link);
-//    } else {
-//        return $res;
-//    }
-
-    $lot_id = get_inserted_id($res, $link);
-
-    //$lot_id = $res;
-    //return $lot_id;
-
-    return $lot_id;
+    return insert_and_get_last_id($lot, 'lot', $link);
 }
 
+function get_N_questions(int $n):string {
+    $questions = '';
+    for ($i = 0; $i < $n; $i++) {
+        $questions .= '?,';
+    }
+    $questions =  substr($questions, 0 , strlen($questions) - 1 );
+
+    return $questions;
+}
+
+function insert_and_get_last_id(array $record, string $tableName, $link): int {
+    $sql = sprintf("INSERT INTO $tableName (%s) VALUES (%s)",
+        implode(',', array_keys($record)),
+        get_N_questions(count($record))
+    );
+
+    $stmt = db_get_prepare_stmt($link, $sql, array_values($record));
+
+    $res = mysqli_stmt_execute($stmt);
+
+    if ($res) {
+        return mysqli_insert_id($link);
+    }
+
+    $error = mysqli_error($link);
+    die(include_template('error.php', ['error' => $error]));
+}
+
+
+/*
 function get_inserted_id ($res, $link): int {
 
      if ($res) {
@@ -215,6 +217,7 @@ function get_inserted_id ($res, $link): int {
      }
      return $inserted_id;
 }
+*/
 
 /**
  * Выводит шаблон страницы общий
@@ -281,6 +284,7 @@ function validate_form_lot(array $lot_uploaded): array
         if (gettype((int)$_POST[$field]) !== 'integer' && ((int)$_POST[$field]) <= 0) {
             $errors[$field] = 'Необходимо корректно заполнить (указать число) поле';
         }
+        $lot_uploaded[$field] = (int)$lot_uploaded[$field];
     }
 
     $file_field_name = 'img_url';
@@ -290,16 +294,18 @@ function validate_form_lot(array $lot_uploaded): array
 
         $file_type = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $temp_name);
 
-        if ($file_type !== "image/png") {
-            $errors['file'] = 'Загрузите картинку в формате PNG';
+//        if ($file_type !== "image/png") {
+
+        if (!in_array($file_type, ['image/png', 'image/jpeg'], true)) {
+            $errors['img_url'] = 'Загрузите картинку в формате PNG или JPEG';
         } else {
             $lot_uploaded = set_uploaded_lot_file($temp_name, $path, $lot_uploaded, 'img_url');
         }
     } else {
-        $errors['file'] = 'Вы не загрузили файл';
+        $errors['img_url'] = 'Вы не загрузили файл';
     }
 
-    $validate_data['errors'] = $error;
+    $validate_data['errors'] = $errors;
     $validate_data['lot_uploaded'] = $lot_uploaded;
 
     return $validate_data;
