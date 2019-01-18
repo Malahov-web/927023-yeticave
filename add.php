@@ -31,17 +31,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]
     );
 
-//    print(get_layout($add, $categories));
+
     die(get_layout($add, $categories));
 
 }
-//else {
-    $add = include_template(
-        'add.php',
-        [
-            'categories' => $categories,
-        ]
-    );
-    print(get_layout($add, $categories));
 
-//}
+$add = include_template(
+    'add.php',
+    [
+        'categories' => $categories,
+    ]
+);
+print(get_layout($add, $categories));
+

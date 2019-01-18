@@ -217,17 +217,6 @@ function insert_and_get_last_id(array $record, string $table_name, $link): int {
     die(include_template('error.php', ['error' => $error]));
 }
 
-
-/*
-function get_inserted_id ($res, $link): int {
-
-     if ($res) {
-         $inserted_id = mysqli_insert_id($link);
-     }
-     return $inserted_id;
-}
-*/
-
 /**
  * Выводит шаблон страницы общий
  *
@@ -296,14 +285,11 @@ function validate_form_lot(array $lot_uploaded): array
         $lot_uploaded[$field] = (int)$lot_uploaded[$field];
     }
 
-    $file_field_name = 'img_url';
     if (isset($_FILES['img_url']['name'])) {
         $temp_name = $_FILES['img_url']['tmp_name'];
         $path = $_FILES['img_url']['name'];
 
         $file_type = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $temp_name);
-
-//        if ($file_type !== "image/png") {
 
         if (!in_array($file_type, ['image/png', 'image/jpeg'], true)) {
             $errors['img_url'] = 'Загрузите картинку в формате PNG или JPEG';
@@ -355,7 +341,6 @@ function validate_form_user(array $user_uploaded): array
             $errors[$field] = 'Необходимо заполнить поле';
         }
     }
-//    $user_uploaded['password'] = password_hash($user_uploaded['password'], PASSWORD_DEFAULT);
 
     $validate_data['errors'] = $errors;
     $validate_data['user_uploaded'] = $user_uploaded;
@@ -394,20 +379,6 @@ function add_user_and_get_inserted_id($link, array $user): int
 {
     $user['password'] = password_hash($user['password'], PASSWORD_DEFAULT);
     return insert_and_get_last_id($user, 'user', $link);
-/*
-    $email = $user['email'];
-    $name = $user['name'];
-    $password = password_hash($user['password'], PASSWORD_DEFAULT);
-    $contacts = $user['contacts'];
-
-    $sql_user = 'INSERT INTO user (email, name, password,  contacts) VALUES (?, ?, ?, ?)';
-
-    $stmt = db_get_prepare_stmt($link, $sql_user, $data = [$email, $name, $password, $contacts]);
-    $res = mysqli_stmt_execute($stmt);
-
-    $lot_id = get_inserted_id($res, $link);
-    return $lot_id;
-   */
 }
 
 /**

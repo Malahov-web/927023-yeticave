@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!count($errors)) {
         $user_uploaded_id = (int)add_user_and_get_inserted_id($link, $user_uploaded);
-        if ( !empty($user_uploaded['avatar_url']) )  {
+        if (!empty($user_uploaded['avatar_url'])) {
             add_user_avatar($link, $user_uploaded_id, $user_uploaded['avatar_url']);
         }
         die(header("Location: index.php"));
@@ -44,17 +44,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'errors' => $errors
         ]
     );
-//    print(get_layout($add, $categories));
+
     die(get_layout($add, $categories));
 
 }
-//else {
 
-    $add = include_template(
-        'sign-up.php',
-        [
-            'categories' => $categories,
-        ]
-    );
-    print(get_layout($add, $categories));
-//}
+$add = include_template(
+    'sign-up.php',
+    [
+        'categories' => $categories,
+    ]
+);
+print(get_layout($add, $categories));
