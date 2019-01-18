@@ -185,7 +185,9 @@ function add_lot_and_get_inserted_id($link, array $lot): int
     $end_at = $lot['end_at'];
     $img_url = $lot['img_url'];
     $user_id = (int)$lot['user_id'];
-
+//    $lot['user_id'] = 1;
+//    $user_id = 3;
+//?><!--<pre>--><?php //var_dump($lot); ?><!--</pre>--><?php
     $sql_lot_single = 'INSERT INTO lot (title, category_id, user_id, description, img_url, price_start, end_at, bet_step) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
 
     $stmt = db_get_prepare_stmt($link, $sql_lot_single, $data = [$lot_name, $category, $user_id, $description, $img_url, $price_start, $end_at, $bet_step]);
