@@ -35,7 +35,11 @@
                     <option>Выберите категорию</option>
                     <?php foreach ($categories as $category): ?>
                         <option
-                            value="<?= h($category['id']); ?>" <?php if ($lot['category']){ $class_selected = ($category['title'] === $lot['category']) ? "selected" : ""; echo $class_selected; } ?> ><?= h($category['title']); ?></option>
+                            value="<?= h($category['id']); ?>"
+                            <?= isset($lot['category']) && ($category['title'] === $lot['category']) ? 'selected' : ''; ?>
+                            >
+                            <?= h($category['title']); ?>
+                        </option>
                     <?php endforeach; ?>
                 </select>
                 <span class="form__error"><?= $errors['category_id']; ?></span>
@@ -68,6 +72,8 @@
                     <span>+ Добавить</span>
                 </label>
             </div>
+
+            <span class="form__error"><?= $errors['img_url']; ?></span>
         </div>
 
 

@@ -1,8 +1,8 @@
 <?php
 
 $database_config = [
-    'host' => 'localhost',
+    'host' => 'yeticave-mysql',
     'user' => 'root',
-    'password' => '',
-    'database' => 'yeticave10'
+    'password' => 'password',
+    'database' => 'yeticave'
 ];
