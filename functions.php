@@ -348,6 +348,34 @@ function validate_form_user(array $user_uploaded): array
     return $validate_data;
 }
 
+function validate_form_login(array $user_logined): array
+{
+    $required_fields = ['email', 'password'];
+    $errors = [];
+
+    $errors = validate_form_empty($user_logined);
+
+    $validate_data['errors'] = $errors;
+    $validate_data['user_logined'] = $user_logined;
+
+    return $validate_data;
+}
+
+function validate_form_empty(array $form_fields): array {
+
+    $errors = [];
+
+    foreach ($form_fields as $field_name => $field) {
+//        echo "<br>$field_name : " . "$field";
+        if (empty ($form_fields[$field_name] )) {
+//            echo "<br>$field_name " . "$field is empty";
+            $errors[$field_name] = 'Необходимо заполнить поле';
+        }
+    }
+//echo '<br>';  var_dump($errors);
+    return $errors;
+}
+
 /**
  * Проверяет что указанный email уже не используется другим пользователем
  *
