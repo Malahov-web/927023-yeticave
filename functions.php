@@ -57,6 +57,13 @@ function get_header(array $categories): string {
     return $result;
 }
 
+/**
+ * Проверяет авторизовани ли пользователь
+ *
+ * @param
+ *
+ * @return bool
+ */
 function is_user_authorized(): bool {
 
     if (isset($_SESSION['user'])) {
@@ -66,13 +73,19 @@ function is_user_authorized(): bool {
     return false;
 }
 
+/**
+ * Разлогинивает пользователя
+ *
+ * @param
+ *
+ * @return
+ */
 function logout()  {
     // Нужно ли тут условие, ловить какие-то ошибки ?
     unset( $_SESSION['user'] );
 
     return ;
 }
-unset($_SESSION['count']);
 
 /**
  * Форматирует цену
@@ -225,6 +238,12 @@ function add_lot_and_get_inserted_id($link, array $lot): int
     return insert_and_get_last_id($lot, 'lot', $link);
 }
 
+/**
+ * Генерирует плейсхолдеры для подготовленного выражения
+ *
+ * @param $n int число, количество параметров запроса
+ * @return string строка плейсхолдеров
+ */
 function get_N_questions(int $n):string {
     $questions = '';
     for ($i = 0; $i < $n; $i++) {

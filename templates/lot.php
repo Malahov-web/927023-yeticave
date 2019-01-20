@@ -20,7 +20,6 @@
             </div>
             <div class="lot-item__right">
 
-                <?php // if (isset($_SESSION['user'])) { ?>
                 <?php if (is_user_authorized()) { ?>
                 <div class="lot-item__state">
                     <div class="lot-item__timer timer">

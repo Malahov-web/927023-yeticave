@@ -7,7 +7,6 @@
     ?>
 
     <?php
-    //    var_dump($errors);
     $class_invalid = isset($errors) ? "form--invalid" : ""; ?>
     <form class="form container <?= $class_invalid; ?>" action="/login.php" method="POST"> <!-- form--invalid -->
         <h2>Вход</h2>

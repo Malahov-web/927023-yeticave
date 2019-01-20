@@ -19,8 +19,7 @@ if (!is_user_authorized()) {
     );
 
     die(get_layout($add, $categories));
-
-//    die(include_template('error.php', ['error' => $error]));
+    
 }
 
 
