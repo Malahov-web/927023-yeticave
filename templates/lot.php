@@ -4,25 +4,13 @@
         $nav = get_navigation($categories);
         print_r($nav);
     }
-    /*
-        <nav class="nav">
-            <ul class="nav__list container">
-
-                <?php foreach ($categories as $category): ?>
-                    <li class="nav__item">
-                        <a href="pages/all-lots.html"><?= h($category['title']); ?></a>
-                    </li>
-                <?php endforeach; ?>
-
-            </ul>
-        </nav>
-       <?php */ ?>
+    ?>
 
     <section class="lot-item container">
         <h2><?= h($lots['title']); ?></h2>
         <div class="lot-item__content">
             <div class="lot-item__left">
-                <div class="lot-item__image"  style="text-align: left;">
+                <div class="lot-item__image" style="text-align: left;">
                     <img src="<?= h($lots['img_url']); ?>" width="730" height="548" alt="">
                 </div>
                 <p class="lot-item__category">Категория: <span><?= h($lots['cat_title']); ?></span></p>
@@ -31,6 +19,9 @@
                 </p>
             </div>
             <div class="lot-item__right">
+
+                <?php // if (isset($_SESSION['user'])) { ?>
+                <?php if (is_user_authorized()) { ?>
                 <div class="lot-item__state">
                     <div class="lot-item__timer timer">
                         10:54
@@ -53,6 +44,8 @@
                         <button type="submit" class="button">Сделать ставку</button>
                     </form>
                 </div>
+                <?php } ?>
+
                 <div class="history">
                     <h3>История ставок (<span>10</span>)</h3>
                     <table class="history__list">

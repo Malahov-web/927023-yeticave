@@ -4,19 +4,7 @@
         $nav = get_navigation($categories);
         print_r($nav);
     }
-/*
-    <nav class="nav">
-        <ul class="nav__list container">
-
-            <?php foreach ($categories as $category): ?>
-                <li class="nav__item">
-                    <a href="pages/all-lots.html"><?= h($category['title']); ?></a>
-                </li>
-            <?php endforeach; ?>
-
-        </ul>
-    </nav>
-   <?php */ ?>
+?>
 
     <?php $class_invalid = isset($errors) ? "form--invalid" : ""; ?>
     <form class="form form--add-lot container <?= $class_invalid; ?>" action="/add.php" method="POST"

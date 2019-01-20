@@ -9,6 +9,14 @@
 <body>
 <div class="page-wrapper">
 
+    <?php
+    if ($categories) {
+        $header = get_header($categories);
+        print_r($header);
+    }
+    ?>
+
+    <?php /* ?>
     <header class="main-header">
         <div class="main-header__container container">
             <h1 class="visually-hidden">YetiCave</h1>
@@ -44,24 +52,19 @@
             </nav>
         </div>
     </header>
-
+    <?php */ ?>
 
     <?= $content; ?>
 
 </div>
 
 <footer class="main-footer">
-    <nav class="nav">
-        <ul class="nav__list container">
-
-            <?php foreach ($categories as $category): ?>
-                <li class="nav__item">
-                    <a href="pages/all-lots.html"><?= h($category['title']); ?></a>
-                </li>
-            <?php endforeach; ?>
-
-        </ul>
-    </nav>
+    <?php
+    if ($categories) {
+        $nav = get_navigation($categories);
+        print_r($nav);
+    }
+    ?>
     <div class="main-footer__bottom container">
         <div class="main-footer__copyright">
             <p>© 2018, YetiCave</p>

@@ -29,13 +29,41 @@ function include_template(string $name, array $data): string
     return $result;
 }
 
+/**
+ * Подключает шаблон Навигации
+ *
+ * @param $data array Данные для вывода
+ *
+ * @return string Шаблон страницы
+ */
 function get_navigation(array $categories): string {
-//function get_navigation(): string {
 
     $result = include_template('navigation.php', ['categories' => $categories]);
-//     include_template('navigation.php');
 
     return $result;
+}
+
+/**
+ * Подключает шаблон Шапки
+ *
+ * @param $data array Данные для вывода
+ *
+ * @return string Шаблон страницы
+ */
+function get_header(array $categories): string {
+
+    $result = include_template('header.php', ['categories' => $categories]);
+
+    return $result;
+}
+
+function is_user_authorized(): bool {
+
+    if (isset($_SESSION['user'])) {
+        return true;
+    }
+
+    return false;
 }
 
 /**
