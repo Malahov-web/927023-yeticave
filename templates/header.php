@@ -13,23 +13,16 @@
         <nav class="user-menu">
 
             <?php
-//          if (isset($_SESSION)) :
-//          if (isset($_SESSION['user'])) :
             if (is_user_authorized()) :
             $user = $_SESSION['user'];
-//            [$user_name, $email] Деструктуризация
 
-//echo '<br>$_SESSION[\'user\']' . $_SESSION['user'];
-//            var_dump($_SESSION['user']);
-            var_dump($user);
-
-            //if ($is_auth)  :
                 ?>
                 <div class="user-menu__image">
-                    <img src="<?=$user['avatar_url']; ?>" width="40" height="40" alt="Пользователь">
+                    <img src="<?=$user['avatar_url']; ?>" width="40" height="40" alt="<?=$user['name']; ?>">
                 </div>
                 <div class="user-menu__logged">
-                    <p><?=$user['email']; ?></p>
+                    <p><?=$user['name']; ?></p>
+                    <a href="/logout.php">Выйти</a>
                 </div>
             <?php else: ?>
                 <ul class="user-menu__list">

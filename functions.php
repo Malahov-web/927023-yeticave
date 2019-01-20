@@ -66,6 +66,14 @@ function is_user_authorized(): bool {
     return false;
 }
 
+function logout()  {
+    // Нужно ли тут условие, ловить какие-то ошибки ?
+    unset( $_SESSION['user'] );
+
+    return ;
+}
+unset($_SESSION['count']);
+
 /**
  * Форматирует цену
  *

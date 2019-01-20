@@ -6,6 +6,24 @@ $categories = get_categories($link);
 $lots = get_lots($link);
 
 
+if (!is_user_authorized()) {
+
+    http_response_code(403);
+    $errors = "У Вас нет прав просматривать эту страницу. Только авторизованные пользователи могут это делать";
+    $add = include_template(
+        'error.php',
+        [
+            'categories' => $categories,
+            'error' => $errors
+        ]
+    );
+
+    die(get_layout($add, $categories));
+
+//    die(include_template('error.php', ['error' => $error]));
+}
+
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $lot_uploaded = $_POST;

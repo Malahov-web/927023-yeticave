@@ -4,7 +4,7 @@
         $nav = get_navigation($categories);
         print_r($nav);
     }
-?>
+    ?>
 
     <?php $class_invalid = isset($errors) ? "form--invalid" : ""; ?>
     <form class="form form--add-lot container <?= $class_invalid; ?>" action="/add.php" method="POST"
@@ -31,10 +31,10 @@
                     <?php foreach ($categories as $category): ?>
                         <option
                             value="<?= h($category['id']); ?>" <?php
-                            isset($lot['category']) && ($category['title'] === $lot['category'])
-                                ? "selected"
-                                : "";
-                            ?>
+                        isset($lot['category']) && ($category['title'] === $lot['category'])
+                            ? "selected"
+                            : "";
+                        ?>
                         ><?= h($category['title']); ?></option>
                     <?php endforeach; ?>
                 </select>
