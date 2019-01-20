@@ -1,15 +1,23 @@
 <main class="lot-single">
-    <nav class="nav">
-        <ul class="nav__list container">
+    <?php
+    if ($categories) {
+        $nav = get_navigation($categories);
+        print_r($nav);
+    }
+    /*
+        <nav class="nav">
+            <ul class="nav__list container">
 
-            <?php foreach ($categories as $category): ?>
-                <li class="nav__item">
-                    <a href="pages/all-lots.html"><?= h($category['title']); ?></a>
-                </li>
-            <?php endforeach; ?>
+                <?php foreach ($categories as $category): ?>
+                    <li class="nav__item">
+                        <a href="pages/all-lots.html"><?= h($category['title']); ?></a>
+                    </li>
+                <?php endforeach; ?>
 
-        </ul>
-    </nav>
+            </ul>
+        </nav>
+       <?php */ ?>
+
     <section class="lot-item container">
         <h2><?= h($lots['title']); ?></h2>
         <div class="lot-item__content">

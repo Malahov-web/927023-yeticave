@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 require_once 'init.php';
 
 $categories = get_categories($link);
@@ -19,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = mysqli_real_escape_string($link, $user_logined['email']);
     $sql = "SELECT * FROM user WHERE email = '$email'";
     $res = mysqli_query($link, $sql);
-var_dump($res);
+//var_dump($res);
     $user = $res ? mysqli_fetch_array($res, MYSQLI_ASSOC) : null;
 
     if (!count($errors) and $user) {
@@ -27,6 +29,7 @@ var_dump($res);
             $_SESSION['user'] = $user;
 
             // Аутентификация прошла успешно
+            die(header("Location: index.php"));
             // ...
 //            die(get_layout($login, $categories));
         }

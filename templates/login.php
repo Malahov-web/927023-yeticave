@@ -1,4 +1,13 @@
 <main>
+    <?php
+    if ($categories) {
+        $nav = get_navigation($categories);
+        print_r($nav);
+    }
+
+//    get_navigation();
+
+    /* ?>
     <nav class="nav">
         <ul class="nav__list container">
             <?php
@@ -12,6 +21,7 @@
             ?>
         </ul>
     </nav>
+   <?php */ ?>
 
     <?php
 //    var_dump($errors);

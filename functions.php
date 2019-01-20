@@ -29,6 +29,15 @@ function include_template(string $name, array $data): string
     return $result;
 }
 
+function get_navigation(array $categories): string {
+//function get_navigation(): string {
+
+    $result = include_template('navigation.php', ['categories' => $categories]);
+//     include_template('navigation.php');
+
+    return $result;
+}
+
 /**
  * Форматирует цену
  *
