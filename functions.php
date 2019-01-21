@@ -71,11 +71,11 @@ function h(string $data): string
 }
 
 /**
- * Очищает  строку
+ * Создает подключение к базе данных
  *
- * @param $data string Строка введенная
+ * @param array $database_config параметры подключения к базе данных
  *
- * @return string Строка обработанная
+ * @return object ресурс соединения
  */
 function init_database(array $database_config)
 {
@@ -99,12 +99,8 @@ function init_database(array $database_config)
 function get_categories($link): array
 {
     $sql = 'SELECT id, title FROM category';
-    $result = mysqli_query($link, $sql);
 
-    if ($result === false) {
-        $error = mysqli_error($link);
-        die(include_template('error.php', ['error' => $error]));
-    }
+    $result = fetch_data($link, $sql);
 
     return mysqli_fetch_all($result, MYSQLI_ASSOC) ?? [];
 }
@@ -130,12 +126,8 @@ function get_lots($link): array
         GROUP BY l.id
         ORDER BY l.created_at DESC;
     ';
-    $result_lots = mysqli_query($link, $sql_lots);
 
-    if ($result_lots === false) {
-        $error = mysqli_error($link);
-        die(include_template('error.php', ['error' => $error]));
-    }
+    $result_lots = fetch_data($link, $sql_lots);
 
     return mysqli_fetch_all($result_lots, MYSQLI_ASSOC) ?? [];
 }
@@ -157,12 +149,8 @@ function get_lot_active($link, int $lot_id): array
         ON l.category_id = c.id
             WHERE l.id = $lot_id
             AND l.end_at > NOW()";
-    $result_lot_single = mysqli_query($link, $sql_lot_single);
 
-    if ($result_lot_single === false) {
-        $error = mysqli_error($link);
-        die(include_template('error.php', ['error' => $error]));
-    }
+    $result_lot_single = fetch_data($link, $sql_lot_single);
 
     return mysqli_fetch_assoc($result_lot_single) ?? [];
 }
@@ -180,12 +168,13 @@ function add_lot_and_get_inserted_id($link, array $lot): int
     return insert_and_get_last_id($lot, 'lot', $link);
 }
 
-function get_N_questions(int $n):string {
+function get_N_questions(int $n): string
+{
     $questions = '';
     for ($i = 0; $i < $n; $i++) {
         $questions .= '?,';
     }
-    $questions =  substr($questions, 0 , strlen($questions) - 1 );
+    $questions = substr($questions, 0, strlen($questions) - 1);
 
     return $questions;
 }
@@ -199,7 +188,8 @@ function get_N_questions(int $n):string {
  *
  * @return int ID добавленной записи
  */
-function insert_and_get_last_id(array $record, string $table_name, $link): int {
+function insert_and_get_last_id(array $record, string $table_name, $link): int
+{
     $sql = sprintf("INSERT INTO $table_name (%s) VALUES (%s)",
         implode(',', array_keys($record)),
         get_N_questions(count($record))
@@ -279,7 +269,7 @@ function validate_form_lot(array $lot_uploaded): array
     }
 
     foreach ($number_fields as $field) {
-        if (gettype((int)$lot_uploaded[$field]) !== 'integer' && ((int)$lot_uploaded[$field]) <= 0) {
+        if (!is_positive_numeric($lot_uploaded[$field])) {
             $errors[$field] = 'Необходимо корректно заполнить (указать число) поле';
         }
         $lot_uploaded[$field] = (int)$lot_uploaded[$field];
@@ -354,17 +344,15 @@ function validate_form_user(array $user_uploaded): array
  * @param $link mysqli Ресурс соединения
  * @param $email array Email пользователя
  *
- * @return int Флаг
+ * @return bool Флаг
  */
-function is_email_already_use($link, string $email): int
+function is_email_already_use($link, string $email): bool
 {
-
     $email = mysqli_real_escape_string($link, $email);
     $sql = "SELECT * FROM user WHERE email = '$email'";
     $result = mysqli_query($link, $sql);
 
-//    return (mysqli_num_rows($result) > 0) ? 1 : 0;
-    return mysqli_num_rows($result);
+    return (mysqli_num_rows($result) > 0) ? true : false;
 }
 
 /**
@@ -388,7 +376,7 @@ function add_user_and_get_inserted_id($link, array $user): int
  *
  * @return string Email-адрес отфильтрованный
  */
-function is_email_valid(string $email): string
+function is_email_valid(string $email): bool
 {
     return filter_var($email, FILTER_VALIDATE_EMAIL);
 }
@@ -436,16 +424,36 @@ function check_avatar(array $errors, array $user_uploaded): array
  *
  * @return int ID пользователя
  */
-function add_user_avatar($link, int $user_id, string $avatar_url): int
+function add_user_avatar($link, int $user_id, string $avatar_url)
+{
+    $sql_user_avatar = "UPDATE user SET avatar_url = '$avatar_url' WHERE id = $user_id";
+    $res = fetch_data($link, $sql_user_avatar);
+
+}
+
+function is_positive_numeric($field): bool
 {
 
-    $sql_user_avatar = "UPDATE user SET avatar_url = '$avatar_url' WHERE id = $user_id";
-    $res = mysqli_query($link, $sql_user_avatar);
+    return (gettype((int)$lot_uploaded[$field]) == 'integer' && ((int)$lot_uploaded[$field]) > 0);
+}
 
-    if ($res) {
-        $res = mysqli_insert_id($link);
+/**
+ * Делает SQL-запрос в БД и выводит ошибку
+ *
+ * @param $link mysqli Ресурс соединения
+ * @param $sql string запрос в БД
+ *
+ * @return mysqli_result данные
+ */
+function fetch_data($link, string $sql): mysqli_result
+{
+
+    $result = mysqli_query($link, $sql);
+
+    if ($result === false) {
+        $error = mysqli_error($link);
+        die(include_template('error.php', ['error' => $error]));
     }
-    $user_id = $res;
 
-    return $user_id;
+    return $result;
 }
