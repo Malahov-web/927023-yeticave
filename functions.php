@@ -404,7 +404,6 @@ function is_email_valid(string $email): string
 function check_avatar(array $errors, array $user_uploaded): array
 {
     $avatar_is_valid = 0;
-//    if (isset($_FILES['avatar_url']['name'])) {
     if (!empty($_FILES['avatar_url']['name'])) {
         $temp_name = $_FILES['avatar_url']['tmp_name'];
         $path = $_FILES['avatar_url']['name'];
